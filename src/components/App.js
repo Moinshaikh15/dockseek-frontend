@@ -4,6 +4,7 @@ import Login from "./auth/Login";
 import Main from "./Main";
 import Home from "./Home";
 import ResetLink from "./auth/ResetLink";
+import Passreset from "./Passreset";
 function App() {
   return (
     <div className="App">
@@ -13,7 +14,8 @@ function App() {
         <Route path="/main" element={<Main />}>
           <Route path="/main/" element={<Home />} />
         </Route>
-        <Route path="/reset/:email" element={<ResetLink />} />
+        <Route path="/reset/:code" element={<ResetLink />} />
+        <Route path="/resetpass" element={<Passreset />} />
       </Routes>
     </div>
   );

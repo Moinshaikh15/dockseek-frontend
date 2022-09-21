@@ -36,26 +36,6 @@ export default function Login() {
     }
   };
 
-  let resetPass = async () => {
-    try {
-      let resp = await fetch("http://localhost:8000/auth/reqreset", {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-      if (resp.status === 200) {
-        let data = await resp.json();
-        console.log(data);
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
-    } catch (err) {
-      alert(err.message);
-    }
-  };
   //   let handleChange = (e) => {
   //     setEmail(e.target.value);
   //   };
@@ -96,14 +76,7 @@ export default function Login() {
                   placeholder="******"
                 ></Field>
                 <ErrorMessage name="password" className="err"></ErrorMessage>
-                <p
-                  onClick={() => {
-                    resetPass();
-                  }}
-                  style={{ color: "blue", cursor: "pointer" }}
-                >
-                  Forgot password?
-                </p>
+                <Link to={"/resetpass"}>Forgot password?</Link>
               </div>
 
               <button type="submit">Login</button>

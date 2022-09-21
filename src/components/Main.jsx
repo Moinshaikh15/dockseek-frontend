@@ -26,10 +26,10 @@ export default function Main() {
         dispatch(setInfo(data));
       } else {
         let err = await resp.text();
-        alert(err);
+        console.log(err);
       }
     } catch (err) {
-      alert(err.message);
+      console.log(err.message);
     }
   };
   let getPatient = async () => {
@@ -37,7 +37,7 @@ export default function Main() {
     let token = localStorage.getItem("accessToken");
     try {
       let resp = await fetch(`http://localhost:8000/patient/${patId}`, {
-        method: "POST",
+        method: "GET",
         headers: {
           "content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -48,14 +48,14 @@ export default function Main() {
         dispatch(setInfo(data));
       } else {
         let err = await resp.text();
-        alert(err);
+        console.log(err);
       }
     } catch (err) {
-      alert(err.message);
+      console.log(err.message);
     }
   };
   useEffect(() => {
-    if (userInfo?.docId !== null) {
+    if (userInfo?.docid !== null) {
       getDocInfo();
     } else {
       getPatient();
@@ -69,8 +69,7 @@ export default function Main() {
     <div className="main">
       {showPopup ? (
         <div className="popup-div">
-          {" "}
-          {userInfo.docId !== null ? <DocPopup /> : <PatPopup />}
+          {userInfo.docid !== null ? <DocPopup /> : <PatPopup />}
         </div>
       ) : (
         ""

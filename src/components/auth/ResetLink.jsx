@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ResetLink() {
-  let { email } = useParams();
+  let { code } = useParams();
   let goto = useNavigate();
   let passRef = useRef();
   let resetPass = async () => {
     try {
-      let resp = await fetch(`http://localhost:8000/auth/${email}/resetpass`, {
+      let resp = await fetch(`http://localhost:8000/auth/${code}/resetpass`, {
         method: "POST",
         headers: {
           "content-Type": "application/json",

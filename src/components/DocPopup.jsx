@@ -21,7 +21,7 @@ export default function DocPopup() {
     let token = localStorage.getItem("accessToken");
     obj.docId = userInfo.docid;
     obj.timeSlots = timeSlots;
-    console.log(obj)
+    console.log(obj);
 
     try {
       let resp = await fetch(`http://localhost:8000/doctor/new`, {
@@ -30,7 +30,7 @@ export default function DocPopup() {
           "content-Type": "application/json",
           Authorization: "Bearer " + token,
         },
-        body:JSON.stringify(obj)
+        body: JSON.stringify(obj),
       });
 
       if (resp.status === 200) {
@@ -45,7 +45,7 @@ export default function DocPopup() {
   };
   return (
     <div className="doc-form">
-      <h2> Tell Us about your Self</h2>
+      <h2>Hey Doc! Tell Us about your Self</h2>
       <div>
         <Formik
           initialValues={{
@@ -67,7 +67,7 @@ export default function DocPopup() {
         >
           {({ isSubmitting }) => (
             <Form className="popup-Form">
-              <div>
+              <div className="field">
                 <label htmlFor="qualification">Qualification</label>
                 <Field
                   type="text"
@@ -80,29 +80,29 @@ export default function DocPopup() {
                   className="err"
                 ></ErrorMessage>
               </div>
-              <div>
+              <div className="field">
                 <label htmlFor="experience">Experience in Years</label>
                 <Field type="number" id="experience" name="experience"></Field>
                 <ErrorMessage name="experience" className="err"></ErrorMessage>
               </div>
-              <div>
+              <div className="field">
                 <label htmlFor="speciality">Specialities</label>
                 <Field type="text" id="speciality" name="speciality"></Field>
                 <ErrorMessage name="speciality" className="err"></ErrorMessage>
               </div>
-              <div>
+              <div className="field">
                 <label htmlFor="hospital">Hospital Name</label>
                 <Field type="text" id="hospital" name="hospital"></Field>
                 <ErrorMessage name="hospital" className="err"></ErrorMessage>
               </div>
 
               <div className="contact-div">
-                <div>
+                <div className="field">
                   <label htmlFor="location">Location</label>
                   <Field type="text" id="location" name="location"></Field>
                   <ErrorMessage name="location" className="err"></ErrorMessage>
                 </div>
-                <div>
+                <div className="field">
                   <label htmlFor="contact">Contact Number</label>
                   <Field type="text" id="contact" name="contact"></Field>
                   <ErrorMessage name="contact" className="err"></ErrorMessage>
