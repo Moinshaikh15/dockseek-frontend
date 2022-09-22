@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { json, useParams } from "react-router-dom";
 import axiosClient from "../axiosConfig";
 export default function DocDetail() {
   let { userInfo } = useSelector((state) => state.user);
@@ -20,12 +20,23 @@ export default function DocDetail() {
   });
   let timeSlots = docInfo?.timeslots;
 
-  let todaysFullDate = () => {
-    var d = new Date(),
-      month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
+  let todaysFullDate = (selectedDay) => {
+    let diff = days.indexOf(selectedDay) - todaysDay;
+    let d = new Date();
+    let totalDaysOfMonth = new Date(
+      d.getFullYear(),
+      d.getMonth() + 2,
+      0
+    ).getDate();
 
+    let day = d.getDate() + diff;
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
+
+    if (totalDaysOfMonth < day) {
+      month += 1;
+      day -= totalDaysOfMonth;
+    }
     if (month.length < 2) month = "0" + month;
     if (day.length < 2) day = "0" + day;
 
@@ -33,19 +44,24 @@ export default function DocDetail() {
   };
 
   let bookAppointment = () => {
+    let date = todaysFullDate(selectedDay);
+
     var timeParts = selectedSlot.split(":");
     let timeInMinutes = Number(timeParts[0]) * 60 + Number(timeParts[1]);
     let endTime = timeInMinutes + 30;
     var hours = Math.floor(endTime / 60);
     var minutes = endTime % 60;
     endTime = hours + ":" + minutes;
+
     let data = {
       fees: docInfo.fees,
       docName: docInfo.name,
-      docId: docInfo.docId,
-      patId: userInfo.name,
+      docId: docInfo.docid,
+      patId: userInfo.patid !== null ? userInfo.patid : userInfo.docid,
+      patName: userInfo.name,
       startTime: selectedSlot,
       endTime: endTime,
+      date: date,
       flag: "pending",
     };
     console.log(data);
@@ -56,6 +72,20 @@ export default function DocDetail() {
     // } catch (err) {
     //   alert(err.message);
     // }
+
+    let copySlots = JSON.parse(JSON.stringify(docInfo.timeslots));
+
+    copySlots[selectedDay].booked.push(selectedSlot);
+    console.log(copySlots)
+    try {
+      axiosClient
+        .post(`doctor/${docInfo.docid}/update`, { timeSlots: copySlots })
+        .then((res) => {
+          let data = res.data;
+        });
+    } catch (err) {
+      alert(err.message);
+    }
   };
   useEffect(() => {}, []);
   return (
@@ -83,9 +113,14 @@ export default function DocDetail() {
                 {days.map((el, indx) => {
                   if (indx >= todaysDay) {
                     return (
-                      <div>
+                      <div
+                        style={{
+                          backgroundColor:
+                            selectedDay === el ? "lightblue" : "",
+                        }}
+                      >
                         {todaysDay === indx ? (
-                          <p>Today</p>
+                          <p onClick={() => setSelectedDay(el)}>Today</p>
                         ) : (
                           <p onClick={() => setSelectedDay(el)}>{el}</p>
                         )}
@@ -95,12 +130,12 @@ export default function DocDetail() {
                 })}
               </div>
               <div className="availableSlots-container">
-                {timeSlots[selectedDay]?.length === 0 ? (
+                {timeSlots[selectedDay].available?.length === 0 ? (
                   <div>
-                    <p>No slots available on this day</p>
+                    <p>No slots availabe on this day</p>
                   </div>
                 ) : (
-                  timeSlots[selectedDay]?.map((el) => {
+                  timeSlots[selectedDay].available?.map((el) => {
                     return (
                       <div
                         onClick={() => setSelectedSlot(el)}
@@ -116,7 +151,7 @@ export default function DocDetail() {
                 )}
               </div>
             </div>
-            <button>Book Appointment</button>
+            <button onClick={() => bookAppointment()}>Book Appointment</button>
           </div>
         </div>
       </div>

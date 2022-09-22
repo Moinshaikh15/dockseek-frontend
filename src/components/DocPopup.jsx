@@ -9,19 +9,20 @@ export default function DocPopup() {
   let dispatch = useDispatch();
   let days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
   let [timeSlots, setTimeSlots] = useState({
-    Mon: [],
-    Tue: [],
-    Wed: [],
-    Thur: [],
-    Fri: [],
-    Sat: [],
-    Sun: [],
+    Mon: { available: [], booked: [] },
+    Tue: { available: [], booked: [] },
+    Wed: { available: [], booked: [] },
+    Thur: { available: [], booked: [] },
+    Fri: { available: [], booked: [] },
+    Sat: { available: [], booked: [] },
+    Sun: { available: [], booked: [] },
+
   });
 
   let saveDocInfo = async (obj) => {
-    let token = localStorage.getItem("accessToken");
     obj.docId = userInfo.docid;
     obj.timeSlots = timeSlots;
+
     obj.name = userInfo.name;
     console.log(obj);
     try {
@@ -109,18 +110,18 @@ export default function DocPopup() {
                           type="button"
                           onClick={() => {
                             let add = true;
-                            timeSlots[day].map((range, index) => {
+                            timeSlots[day].available.map((range, index) => {
                               if (range[0] === 600) {
-                                timeSlots[day].splice(index, 1);
+                                timeSlots[day].available.splice(index, 1);
                                 add = false;
                                 return;
                               }
                             });
-                            if (add)
-                              setTimeSlots({
-                                ...timeSlots,
-                                [day]: [...timeSlots[day], [600, 780]],
-                              });
+                            if (add) {
+                              let copy = timeSlots;
+                              copy[day].available.push([600, 780]);
+                              setTimeSlots(copy);
+                            }
                           }}
                         >
                           10:00-13:00
@@ -129,18 +130,22 @@ export default function DocPopup() {
                           type="button"
                           onClick={() => {
                             let add = true;
-                            timeSlots[day].map((range, index) => {
+                            timeSlots[day].available.map((range, index) => {
                               if (range[0] === 780) {
-                                timeSlots[day].splice(index, 1);
+                                timeSlots[day].available.splice(index, 1);
                                 add = false;
                                 return;
                               }
                             });
-                            if (add)
-                              setTimeSlots({
-                                ...timeSlots,
-                                [day]: [...timeSlots[day], [780, 1020]],
-                              });
+                            if (add) {
+                              let copy = timeSlots;
+                              copy[day].available.push([780, 1020]);
+                              setTimeSlots(copy);
+                            }
+                            // setTimeSlots({
+                            //   ...timeSlots,
+                            //   [day]: [...timeSlots[day], [780, 1020]],
+                            // });
                           }}
                         >
                           13:00-17:00
@@ -149,18 +154,22 @@ export default function DocPopup() {
                           type="button"
                           onClick={() => {
                             let add = true;
-                            timeSlots[day].map((range, index) => {
+                            timeSlots[day].available.map((range, index) => {
                               if (range[0] === 780) {
-                                timeSlots[day].splice(index, 1);
+                                timeSlots[day].available.splice(index, 1);
                                 add = false;
                                 return;
                               }
                             });
-                            if (add)
-                              setTimeSlots({
-                                ...timeSlots,
-                                [day]: [...timeSlots[day], [1020, 1200]],
-                              });
+                            if (add) {
+                              let copy = timeSlots;
+                              copy[day].available.push([1020, 1200]);
+                              setTimeSlots(copy);
+                            }
+                            // setTimeSlots({
+                            //   ...timeSlots,
+                            //   [day]: [...timeSlots[day], [1020, 1200]],
+                            // });
                           }}
                         >
                           17:00-20:00
