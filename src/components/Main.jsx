@@ -4,70 +4,64 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { setInfo } from "../slices/userSlice";
 import DocPopup from "./DocPopup";
 import PatPopup from "./PatPopup";
+import axiosClient from "../axiosConfig";
+import Header from "./Header";
+import { setDoctors } from "../slices/infoSlice";
 export default function Main() {
   let dispatch = useDispatch();
   let { userInfo, profile, info } = useSelector((state) => state.user);
   let [showPopup, setShowPopup] = useState(true);
 
+  //get users info if he is a doc
   let getDocInfo = async () => {
     let docId = userInfo.docid;
-    let token = localStorage.getItem("accessToken");
     try {
-      let resp = await fetch(`http://localhost:8000/doctor/${docId}`, {
-        method: "GET",
-        headers: {
-          "content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-
-      if (resp.status === 200) {
-        let data = await resp.json();
+      axiosClient.get(`doctor/${docId}`).then((res) => {
+        let data = res.data;
         dispatch(setInfo(data));
-      } else {
-        let err = await resp.text();
-        console.log(err);
-      }
+      });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   };
+
+  // get users inof if he is patient
   let getPatient = async () => {
     let patId = userInfo.patid;
-    let token = localStorage.getItem("accessToken");
+
     try {
-      let resp = await fetch(`http://localhost:8000/patient/${patId}`, {
-        method: "GET",
-        headers: {
-          "content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (resp.status === 200) {
-        let data = await resp.json();
+      axiosClient.get(`patient/${patId}`).then((res) => {
+        let data = res.data;
         dispatch(setInfo(data));
-      } else {
-        let err = await resp.text();
-        console.log(err);
-      }
+      });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   };
+
+  //get all doc's
+  let getAllDocs = () => {
+    try {
+      axiosClient.get(`doctor/`).then((res) => {
+        let data = res.data;
+        dispatch(setDoctors(data));
+      });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   useEffect(() => {
     if (userInfo?.docid !== null) {
       getDocInfo();
     } else {
       getPatient();
     }
-
-    if (info !== null) {
-      setShowPopup(false);
-    }
+    getAllDocs();
   }, []);
   return (
     <div className="main">
-      {showPopup ? (
+      {info === null ? (
         <div className="popup-div">
           {userInfo.docid !== null ? <DocPopup /> : <PatPopup />}
         </div>
@@ -75,7 +69,10 @@ export default function Main() {
         ""
       )}
 
-      <Outlet />
+      <Header />
+      <div className="outlet">
+        <Outlet />
+      </div>
     </div>
   );
 }

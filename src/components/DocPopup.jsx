@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { setInfo } from "../slices/userSlice";
+import axiosClient from "../axiosConfig";
 export default function DocPopup() {
   let { userInfo } = useSelector((state) => state.user);
   let dispatch = useDispatch();
@@ -21,24 +22,12 @@ export default function DocPopup() {
     let token = localStorage.getItem("accessToken");
     obj.docId = userInfo.docid;
     obj.timeSlots = timeSlots;
+    obj.name = userInfo.name;
     console.log(obj);
-
     try {
-      let resp = await fetch(`http://localhost:8000/doctor/new`, {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify(obj),
+      axiosClient.post(`doctor/new`, obj).then((res) => {
+        let data = res.data;
       });
-
-      if (resp.status === 200) {
-        let data = await resp.json();
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
     } catch (err) {
       alert(err.message);
     }

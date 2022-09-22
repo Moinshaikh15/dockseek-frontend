@@ -1,27 +1,18 @@
 import React, { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import axiosClient from "../../axiosConfig";
 export default function ResetLink() {
   let { code } = useParams();
   let goto = useNavigate();
   let passRef = useRef();
   let resetPass = async () => {
     try {
-      let resp = await fetch(`http://localhost:8000/auth/${code}/resetpass`, {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: passRef.current.value }),
-      });
-      if (resp.status === 200) {
-        let data = await resp.json();
-        console.log(data);
-        goto("/");
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
+      axiosClient
+        .post(`auth/${code}/resetpass`, { password: passRef.current.value })
+        .then((res) => {
+          let data = res.data;
+          goto("/");
+        });
     } catch (err) {
       alert(err.message);
     }

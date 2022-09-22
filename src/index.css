@@ -278,3 +278,117 @@ a {
   border-radius: 20px;
   font-size: 14px;
 }
+
+/* oultet */
+.outlet {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* home */
+.home {
+  width: 100%;
+  min-height: 100vh;
+  padding: 10px;
+  padding-top: 60px;
+}
+.home .docCard-container {
+  display: flex;
+  gap: 10px;
+}
+.home .doc-Card {
+  width: 200px;
+  height: 240px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #f0f0f5;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
+  border-radius: 24px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.home .doc-Card .img-div {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home .doc-Card .doc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.home .doc-Card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid;
+  object-fit: cover;
+}
+
+/* details */
+.doc-details {
+  width: 100%;
+  min-height: 100vh;
+  padding: 10px;
+  padding-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.doc-details > div {
+  width: 70vw;
+  height: 500px;
+  border: 1px solid;
+  display: flex;
+  padding: 10px;
+}
+.doc-details .left {
+  flex: 1;
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+}
+.doc-details .left img {
+  width: 120px;
+  height: 120px;
+  border: 1px solid;
+}
+
+.doc-details .time-slots {
+  flex: 1;
+  padding: 10px;
+}
+.doc-details .time-slots-div{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.doc-details .days {
+  display: flex;
+  gap: 5px;
+  
+}
+.doc-details .days p {
+  cursor: pointer;
+}
+.doc-details .slot-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.doc-details .availableSlots-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.doc-details .availableSlots-container div {
+  border: 1px solid gray;
+  padding: 5px;
+  cursor: pointer;
+}

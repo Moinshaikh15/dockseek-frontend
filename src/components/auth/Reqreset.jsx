@@ -1,23 +1,15 @@
 import React, { useRef } from "react";
-
-export default function Passreset() {
+import axiosClient from "../../axiosConfig";
+export default function Reqreset() {
   let emailRef = useRef();
   let resetPass = async () => {
     try {
-      let resp = await fetch("http://localhost:8000/auth/reqreset", {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: emailRef.current.value }),
-      });
-      if (resp.status === 200) {
-        let data = await resp.json();
-        console.log(data);
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
+      axiosClient
+        .post(`auth/reqreset`, { email: emailRef.current.value })
+        .then((res) => {
+          let data = res.data;
+          console.log(data);
+        });
     } catch (err) {
       alert(err.message);
     }

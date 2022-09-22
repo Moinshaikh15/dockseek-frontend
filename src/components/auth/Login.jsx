@@ -4,33 +4,19 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../slices/userSlice";
+import axiosClient from "../../axiosConfig";
 export default function Login() {
   let dispatch = useDispatch();
   let goto = useNavigate();
-  let ref = useRef();
-  let [email, setEmail] = useState("");
-  console.log(email);
   let login = async (obj) => {
     try {
-      let resp = await fetch("http://localhost:8000/auth/login", {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify(obj),
-      });
-      if (resp.status === 200) {
-        let data = await resp.json();
-        console.log(data);
-
+      axiosClient.post("/auth/login", obj).then((res) => {
+        let data = res.data;
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         dispatch(setUser(data.userInfo));
         goto("/main");
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
+      });
     } catch (err) {
       alert(err.message);
     }

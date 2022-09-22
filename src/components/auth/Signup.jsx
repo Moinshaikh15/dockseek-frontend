@@ -3,10 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../slices/userSlice";
-
+import axiosClient from "../../axiosConfig";
 export default function Signup() {
-  let dispatch = useDispatch();
   let goto = useNavigate();
 
   let [selected, setSelected] = useState(null);
@@ -24,23 +22,12 @@ export default function Signup() {
       let id = Math.floor(Math.random() * (90000 - 10000)) + 10000;
       id = "1" + id;
       obj.patId = id;
-      console.log(id);
-      return;
     }
     try {
-      let resp = await fetch("http://localhost:8000/auth/signup", {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify(obj),
+      axiosClient.post("/auth/signup", obj).then((res) => {
+        let data = res.data;
+        goto("/");
       });
-      if (resp.status === 200) {
-        goto("/main");
-      } else {
-        let err = await resp.text();
-        alert(err);
-      }
     } catch (err) {
       alert(err.message);
     }
