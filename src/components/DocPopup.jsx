@@ -1,4 +1,4 @@
-import React, { useDebugValue, useState } from "react";
+import React, { useDebugValue, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import axiosClient from "../axiosConfig";
 export default function DocPopup() {
   let { userInfo } = useSelector((state) => state.user);
   let dispatch = useDispatch();
+  let [image, setImage] = useState("");
+  let imgRef = useRef();
   let days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
   let [timeSlots, setTimeSlots] = useState({
     Mon: { available: [], booked: [] },
@@ -16,7 +18,6 @@ export default function DocPopup() {
     Fri: { available: [], booked: [] },
     Sat: { available: [], booked: [] },
     Sun: { available: [], booked: [] },
-
   });
 
   let saveDocInfo = async (obj) => {
@@ -35,7 +36,7 @@ export default function DocPopup() {
   };
   return (
     <div className="doc-form">
-      <h2>Hey Doc! Tell Us about your Self</h2>
+      <h2>Hey Doc! Tell Us About Your Self</h2>
       <div>
         <Formik
           initialValues={{
@@ -57,6 +58,48 @@ export default function DocPopup() {
         >
           {({ isSubmitting }) => (
             <Form className="popup-Form">
+              <div className="profile-div">
+                <div className="avatar-div">
+                  <label htmlFor="img">
+                    <img
+                      src={image === "" ? "../addAvatar.png" : image}
+                      alt=""
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    id="img"
+                    name="img"
+                    accept="image/*"
+                    ref={imgRef}
+                    class="inputfile inputfile-1"
+                    data-multiple-caption="{count} files selected"
+                    multiple
+                    onChange={(event) => {
+                      if (event.target.files && event.target.files[0]) {
+                        setImage(() =>
+                          URL.createObjectURL(event.target.files[0])
+                        );
+                      }
+                    }}
+                  />
+                </div>
+                <div className="contact-div">
+                  <div className="field">
+                    <label htmlFor="location">Location</label>
+                    <Field type="text" id="location" name="location"></Field>
+                    <ErrorMessage
+                      name="location"
+                      className="err"
+                    ></ErrorMessage>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="contact">Contact Number</label>
+                    <Field type="text" id="contact" name="contact"></Field>
+                    <ErrorMessage name="contact" className="err"></ErrorMessage>
+                  </div>
+                </div>
+              </div>
               <div className="field">
                 <label htmlFor="qualification">Qualification</label>
                 <Field
@@ -86,19 +129,6 @@ export default function DocPopup() {
                 <ErrorMessage name="hospital" className="err"></ErrorMessage>
               </div>
 
-              <div className="contact-div">
-                <div className="field">
-                  <label htmlFor="location">Location</label>
-                  <Field type="text" id="location" name="location"></Field>
-                  <ErrorMessage name="location" className="err"></ErrorMessage>
-                </div>
-                <div className="field">
-                  <label htmlFor="contact">Contact Number</label>
-                  <Field type="text" id="contact" name="contact"></Field>
-                  <ErrorMessage name="contact" className="err"></ErrorMessage>
-                </div>
-              </div>
-
               <div className="time-slots-div">
                 <label htmlFor="">Select Time Slots</label>
                 <div className="slot-container">
@@ -124,7 +154,7 @@ export default function DocPopup() {
                             }
                           }}
                         >
-                          10:00-13:00
+                          10:00 - 13:00
                         </button>
                         <button
                           type="button"
@@ -148,7 +178,7 @@ export default function DocPopup() {
                             // });
                           }}
                         >
-                          13:00-17:00
+                          13:00 - 17:00
                         </button>
                         <button
                           type="button"
@@ -166,20 +196,18 @@ export default function DocPopup() {
                               copy[day].available.push([1020, 1200]);
                               setTimeSlots(copy);
                             }
-                            // setTimeSlots({
-                            //   ...timeSlots,
-                            //   [day]: [...timeSlots[day], [1020, 1200]],
-                            // });
                           }}
                         >
-                          17:00-20:00
+                          17:00 - 20:00
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-              <button type="submit">Save</button>
+              <button type="submit" className="save-btn">
+                Save
+              </button>
             </Form>
           )}
         </Formik>

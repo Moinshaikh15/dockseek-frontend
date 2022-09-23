@@ -59,12 +59,12 @@ export default function PatPopup() {
             }}
           >
             {({ isSubmitting }) => (
-              <Form className="popup-Form">
+              <Form className="popup-Form" style={{height:"400px"}}>
                 <div className="contact-div">
                   <div className="field">
                     <label htmlFor="age">Age</label>
                     <Field
-                      type="text"
+                      type="number"
                       id="age"
                       name="age"
                       placeholder=""
@@ -180,11 +180,11 @@ export default function PatPopup() {
                       </div>
                     );
                   })}
-                  <button type="button" onClick={() => addFields()}>
+                  <button type="button" onClick={() => addFields()} className='add-btn'>
                     Add more Fields
                   </button>
                 </div>
-                <button type="submit">Save</button>
+                <button type="submit" className="save-btn">Save</button>
               </Form>
             )}
           </Formik>

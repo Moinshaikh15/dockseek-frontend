@@ -44,7 +44,6 @@ export default function Home() {
 
   useEffect(() => {
     setShowDocs(doctors);
-    console.log(doctors);
   }, []);
   return (
     <div className="home">

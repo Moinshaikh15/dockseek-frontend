@@ -25,8 +25,33 @@ code {
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  padding: 10px;
+  padding-top: 20px;
+  overflow: hidden;
+}
+
+.pattern {
+  position: absolute;
+  bottom: -80px;
+  z-index: -1;
+}
+.signup > div {
+  border: 1px solid rgb(216, 215, 215);
+  padding: 10px;
+  border-radius: 3px;
+  background-color: white;
+}
+.login > div {
+  border: 1px solid rgb(216, 215, 215);
+  padding: 10px;
+  border-radius: 3px;
+  margin-top: 120px;
+  background-color: white;
 }
 .signup p {
   font-size: 14px;
@@ -64,6 +89,7 @@ a {
   border: none;
   padding: 5px;
   cursor: pointer;
+  border-radius: 2px;
 }
 .err {
   color: red;
@@ -132,10 +158,11 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(42, 39, 39, 0.541);
+  background-color: rgba(42, 39, 39, 0.819);
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 3;
 }
 .popup-div .doc-form,
 .pat-form {
@@ -150,17 +177,18 @@ a {
 }
 .popup-Form {
   width: 700px;
-  height: 500px;
+  height: 560px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 10px;
+  padding: 20px;
   gap: 15px;
   border-radius: 5px;
   background-color: white;
   position: relative;
 }
+
 .popup-Form .doc-form div {
   display: flex;
   flex-direction: column;
@@ -171,10 +199,41 @@ a {
   flex-direction: column;
   gap: 5px;
 }
+.doc-form #img {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.profile-div {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+}
+.avatar-div {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 1px solid;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+   margin-left: 50px;
+}
+
+.avatar-div img {
+  width: 100px;
+  height: 100px;
+}
 .popup-Form .contact-div {
   display: flex;
-  flex-direction: row;
-  gap: 10px;
+  gap: 15px;
+}
+.popup-Form label {
+  font-weight: 500;
 }
 .popup-Form input {
   padding: 5px;
@@ -200,16 +259,52 @@ a {
 }
 .popup-Form .time-slots-div {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 164px;
+  right: 20px;
   width: 400px;
-  height: 250px;
+  height: 300px;
 }
+
 .popup-Form .time-slots-div .slot-container {
-  height: 100%;
-  padding: 5px;
-  border: 1px solid gray;
+  height: 80%;
+  padding: 10px;
+  border: 1px solid rgb(205, 204, 204);
   overflow-y: auto;
+  margin-top: 5px;
+  border-radius: 5px;
+  direction: ltr;
+  scrollbar-color: #d4aa70 #e4e4e4;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.slot-container p {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.slot-container::-webkit-scrollbar {
+  width: 15px;
+}
+
+.slot-container::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+  border-radius: 100px;
+}
+
+.slot-container::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  border: 5px solid transparent;
+  background-clip: content-box;
+  background-color: #70d495;
+}
+.slot-container::-webkit-scrollbar-thumb {
+  border: 5px solid transparent;
+  border-radius: 100px;
+  background-color: #75d470;
+  background-clip: content-box;
 }
 .popup-Form .slot-container {
   padding: 5px;
@@ -217,7 +312,7 @@ a {
 .popup-Form .time-slots-div .slots {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 15px;
 }
 .popup-Form .slots button {
   width: 100px;
@@ -238,14 +333,27 @@ a {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
 }
+
 .issues {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 15px;
 }
 .issues #issue-name {
   width: 420px;
+}
+.add-btn {
+  width: 140px;
+  height: 36px;
+}
+.save-btn {
+  width: 94%;
+  height: 36px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
 }
 
 /* Header */

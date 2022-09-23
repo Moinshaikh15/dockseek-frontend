@@ -27,6 +27,8 @@ export default function Login() {
   //   };
   return (
     <div className="login">
+      <h2>DockSeek</h2>
+      <img src="../dockSeekLogin.png" alt="" className="pattern"/>
       <div>
         <Formik
           initialValues={{

@@ -14,7 +14,7 @@ export default function Main() {
 
   //get users info if he is a doc
   let getDocInfo = async () => {
-    let docId = userInfo.docid;
+    let docId = userInfo?.docid;
     try {
       axiosClient.get(`doctor/${docId}`).then((res) => {
         let data = res.data;
@@ -27,7 +27,7 @@ export default function Main() {
 
   // get users inof if he is patient
   let getPatient = async () => {
-    let patId = userInfo.patid;
+    let patId = userInfo?.patid;
 
     try {
       axiosClient.get(`patient/${patId}`).then((res) => {
