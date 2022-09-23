@@ -14,11 +14,7 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
-      if (state.userInfo.docid !== null) {
-        state.profile = "doc";
-      } else {
-        state.profile = "pat";
-      }
+      
     },
     setInfo: (state, action) => {
       state.info = action.payload;

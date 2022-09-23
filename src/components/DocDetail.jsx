@@ -8,43 +8,45 @@ export default function DocDetail() {
   let { docid } = useParams();
   const d = new Date();
   let todaysDay = d.getDay();
-  let todaysDate = d.getDate();
-  let days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  let [slots, setSlots] = useState([]);
   let [selectedDay, setSelectedDay] = useState(days[todaysDay]);
   let [selectedSlot, setSelectedSlot] = useState();
+  let [selectedDate, setSelectedDate] = useState();
+
   let docInfo;
-  doctors.map((doc) => {
+  doctors?.map((doc) => {
     if (doc.docid === docid) {
       docInfo = doc;
     }
   });
   let timeSlots = docInfo?.timeslots;
 
-  let todaysFullDate = (selectedDay) => {
-    let diff = days.indexOf(selectedDay) - todaysDay;
-    let d = new Date();
-    let totalDaysOfMonth = new Date(
-      d.getFullYear(),
-      d.getMonth() + 2,
-      0
-    ).getDate();
+  // let todaysFullDate = (selectedDay) => {
+  //   let diff = days.indexOf(selectedDay) - todaysDay;
+  //   let d = new Date();
+  //   let totalDaysOfMonth = new Date(
+  //     d.getFullYear(),
+  //     d.getMonth() + 2,
+  //     0
+  //   ).getDate();
 
-    let day = d.getDate() + diff;
-    let month = d.getMonth() + 1;
-    let year = d.getFullYear();
+  //   let day = d.getDate() + diff;
+  //   let month = d.getMonth() + 1;
+  //   let year = d.getFullYear();
 
-    if (totalDaysOfMonth < day) {
-      month += 1;
-      day -= totalDaysOfMonth;
-    }
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
+  //   if (totalDaysOfMonth < day) {
+  //     month += 1;
+  //     day -= totalDaysOfMonth;
+  //   }
+  //   if (month.length < 2) month = "0" + month;
+  //   if (day.length < 2) day = "0" + day;
 
-    return [year, month, day].join("-");
-  };
+  //   return [year, month, day].join("-");
+  // };
 
   let bookAppointment = () => {
-    let date = todaysFullDate(selectedDay);
+    // let date = todaysFullDate(selectedDay);
 
     var timeParts = selectedSlot.split(":");
     let timeInMinutes = Number(timeParts[0]) * 60 + Number(timeParts[1]);
@@ -61,25 +63,25 @@ export default function DocDetail() {
       patName: userInfo.name,
       startTime: selectedSlot,
       endTime: endTime,
-      date: date,
+      date: selectedDate,
       flag: "pending",
     };
     console.log(data);
-    // try {
-    //   axiosClient.post(`appointment/new`, data).then((res) => {
-    //     let data = res.data;
-    //   });
-    // } catch (err) {
-    //   alert(err.message);
-    // }
-
-    let copySlots = JSON.parse(JSON.stringify(docInfo.timeslots));
-
-    copySlots[selectedDay].booked.push(selectedSlot);
-    console.log(copySlots)
+    try {
+      axiosClient.post(`appointment/new`, data).then((res) => {
+        let data = res.data;
+      });
+    } catch (err) {
+      alert(err.message);
+    }
     try {
       axiosClient
-        .post(`doctor/${docInfo.docid}/update`, { timeSlots: copySlots })
+        .post(`doctor/${docInfo.docid}/bookslot`, {
+          slot: selectedSlot,
+          day: selectedDay,
+          date: selectedDate,
+        })
+
         .then((res) => {
           let data = res.data;
         });
@@ -87,7 +89,24 @@ export default function DocDetail() {
       alert(err.message);
     }
   };
-  useEffect(() => {}, []);
+  let getArr = () => {
+    let arr = [];
+    Object.keys(timeSlots).map((day) => {
+      let copyDay = { ...timeSlots[day] };
+      copyDay.day = day;
+      arr.push(copyDay);
+    });
+    arr.sort((a, b) => {
+      var aa = a.date.split("/").reverse().join(),
+        bb = b.date.split("/").reverse().join();
+      return aa < bb ? -1 : aa > bb ? 1 : 0;
+    });
+    setSlots(arr);
+    setSelectedDate(slots[0]?.date);
+  };
+  useEffect(() => {
+    getArr();
+  }, []);
   return (
     <div className="doc-details">
       <div>
@@ -110,23 +129,38 @@ export default function DocDetail() {
             <label htmlFor="">Select Time Slots</label>
             <div className="slot-container">
               <div className="days">
-                {days.map((el, indx) => {
-                  if (indx >= todaysDay) {
-                    return (
-                      <div
-                        style={{
-                          backgroundColor:
-                            selectedDay === el ? "lightblue" : "",
-                        }}
-                      >
-                        {todaysDay === indx ? (
-                          <p onClick={() => setSelectedDay(el)}>Today</p>
-                        ) : (
-                          <p onClick={() => setSelectedDay(el)}>{el}</p>
-                        )}
-                      </div>
-                    );
-                  }
+                {slots.map((el, indx) => {
+                  return (
+                    <div
+                      style={{
+                        backgroundColor:
+                          selectedDay === el.day ? "lightblue" : "",
+                      }}
+                    >
+                      {days[todaysDay] === el.day ? (
+                        <p
+                          onClick={() => {
+                            setSelectedSlot("");
+                            setSelectedDay(el.day);
+                            setSelectedDate(el.date);
+                          }}
+                        >
+                          Today
+                        </p>
+                      ) : (
+                        <div
+                          onClick={() => {
+                            setSelectedSlot("");
+                            setSelectedDay(el.day);
+                            setSelectedDate(el.date);
+                          }}
+                        >
+                          <p>{el.day}</p>
+                          <p>{el.date.substring(0, 4)}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
                 })}
               </div>
               <div className="availableSlots-container">
@@ -138,10 +172,26 @@ export default function DocDetail() {
                   timeSlots[selectedDay].available?.map((el) => {
                     return (
                       <div
-                        onClick={() => setSelectedSlot(el)}
+                        onClick={() => {
+                          if (!timeSlots[selectedDay].booked.includes(el)) {
+                            if (days[todaysDay] === selectedDay) {
+                              if (d.toLocaleTimeString() < el)
+                                setSelectedSlot(el);
+                            } else {
+                              setSelectedSlot(el);
+                            }
+                          }
+                        }}
                         style={{
                           backgroundColor:
-                            selectedSlot === el ? "lightblue" : "",
+                            selectedSlot === el
+                              ? "lightblue"
+                              : timeSlots[selectedDay].booked.includes(el)
+                              ? "gray"
+                              : days[todaysDay] === selectedDay &&
+                                d.toLocaleTimeString() > el
+                              ? "lightgray"
+                              : "",
                         }}
                       >
                         <p>{el}</p>

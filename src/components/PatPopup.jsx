@@ -160,7 +160,7 @@ export default function PatPopup() {
                   <label htmlFor="location">Past Issues</label>
                   {pastIssueFields.map((field, index) => {
                     return (
-                      <div className="issues">
+                      <div className="issues" key={Date.now() +'fff'+index}>
                         <input
                           type="text"
                           id="issue-name"

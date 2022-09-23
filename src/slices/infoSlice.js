@@ -3,6 +3,17 @@ let initialState = {
   doctors: [],
   appointments: [],
   availableSlots: [],
+  specialities: [
+    "Gynecologist",
+    "Dentist",
+    "General Physician",
+    "Dermatologist",
+    "Ear-nose-throat(ent)Specialist",
+    "Homoeopath",
+    "Ayurveda",
+    "Orthopedics",
+    "BDS",
+  ],
 };
 if (localStorage.getItem("userInfo") !== "undefined") {
   initialState.userInfo = JSON.parse(localStorage.getItem("userInfo"));
