@@ -19,21 +19,34 @@ export default function DocPopup() {
     Sat: { available: [], booked: [] },
     Sun: { available: [], booked: [] },
   });
-
+  let [selectedSlots, setSelectedSlots] = useState([]);
   let saveDocInfo = async (obj) => {
-    obj.docId = userInfo.docid;
-    obj.timeSlots = timeSlots;
+    // obj.docId = userInfo.docid;
+    // obj.timeSlots = timeSlots;
+    // obj.name = userInfo.name;
 
-    obj.name = userInfo.name;
-    console.log(obj);
+    let newForm = new FormData();
+    newForm.append("qualification", obj.qualification);
+    newForm.append("experience", obj.experience);
+    newForm.append("location", obj.location);
+    newForm.append("speciality", obj.speciality);
+    newForm.append("contact", obj.contact);
+    newForm.append("hospital", obj.hospital);
+    newForm.append("img", imgRef?.current.files[0]);
+    newForm.append("name", userInfo.name);
+    newForm.append("timeSlots", JSON.stringify(timeSlots));
+    newForm.append("docId", userInfo.docid);
+
     try {
-      axiosClient.post(`doctor/new`, obj).then((res) => {
+      axiosClient.post(`doctor/new`, newForm).then((res) => {
         let data = res.data;
+        console.log(data);
       });
     } catch (err) {
       alert(err.message);
     }
   };
+  console.log(selectedSlots);
   return (
     <div className="doc-form">
       <h2>Hey Doc! Tell Us About Your Self</h2>
@@ -47,6 +60,7 @@ export default function DocPopup() {
             timeSlots: "",
             contact: "",
             hospital: "",
+            fees: "",
           }}
           validationSchema={Yup.object({
             qualification: Yup.string().required("Required"),
@@ -61,10 +75,7 @@ export default function DocPopup() {
               <div className="profile-div">
                 <div className="avatar-div">
                   <label htmlFor="img">
-                    <img
-                      src={image === "" ? "../addAvatar.png" : image}
-                      alt=""
-                    />
+                    <img src={image === "" ? "../avatar.png" : image} alt="" />
                   </label>
                   <input
                     type="file"
@@ -72,7 +83,7 @@ export default function DocPopup() {
                     name="img"
                     accept="image/*"
                     ref={imgRef}
-                    class="inputfile inputfile-1"
+                    className="inputfile inputfile-1"
                     data-multiple-caption="{count} files selected"
                     multiple
                     onChange={(event) => {
@@ -85,14 +96,27 @@ export default function DocPopup() {
                   />
                 </div>
                 <div className="contact-div">
-                  <div className="field">
-                    <label htmlFor="location">Location</label>
-                    <Field type="text" id="location" name="location"></Field>
-                    <ErrorMessage
-                      name="location"
-                      className="err"
-                    ></ErrorMessage>
+                  <div>
+                    <div className="field">
+                      <label htmlFor="location">Location</label>
+                      <Field type="text" id="location" name="location"></Field>
+                      <ErrorMessage
+                        name="location"
+                        className="err"
+                      ></ErrorMessage>
+                    </div>
+                    <div className="field" style={{ marginTop: "10px" }}>
+                      <label htmlFor="fees">Fees</label>
+                      <Field
+                        type="text"
+                        id="fees"
+                        name="fees"
+                        placeholder="₹"
+                      ></Field>
+                      <ErrorMessage name="fees" className="err"></ErrorMessage>
+                    </div>
                   </div>
+
                   <div className="field">
                     <label htmlFor="contact">Contact Number</label>
                     <Field type="text" id="contact" name="contact"></Field>
@@ -106,7 +130,7 @@ export default function DocPopup() {
                   type="text"
                   id="qualification"
                   name="qualification"
-                  placeholder=""
+                  placeholder="MBBS"
                 ></Field>
                 <ErrorMessage
                   name="qualification"
@@ -144,14 +168,35 @@ export default function DocPopup() {
                               if (range[0] === 600) {
                                 timeSlots[day].available.splice(index, 1);
                                 add = false;
+                                let idx = selectedSlots.indexOf(
+                                  `${day}:10:00-13:00`
+                                );
+                                let copySelected = selectedSlots;
+                                copySelected.splice(idx, 1);
+                                setSelectedSlots(copySelected);
                                 return;
                               }
                             });
+
                             if (add) {
+                              setSelectedSlots([
+                                ...selectedSlots,
+                                `${day}:10:00-13:00`,
+                              ]);
                               let copy = timeSlots;
                               copy[day].available.push([600, 780]);
                               setTimeSlots(copy);
                             }
+                          }}
+                          style={{
+                            backgroundColor: selectedSlots.includes(
+                              `${day}:10:00-13:00`
+                            )
+                              ? "rgb(65, 155, 73)"
+                              : "",
+                            color: selectedSlots.includes(`${day}:10:00-13:00`)
+                              ? "white"
+                              : "",
                           }}
                         >
                           10:00 - 13:00
@@ -164,10 +209,20 @@ export default function DocPopup() {
                               if (range[0] === 780) {
                                 timeSlots[day].available.splice(index, 1);
                                 add = false;
+                                let idx = selectedSlots.indexOf(
+                                  `${day}:13:00-17:00`
+                                );
+                                let copySelected = selectedSlots;
+                                copySelected.splice(idx, 1);
+                                setSelectedSlots(copySelected);
                                 return;
                               }
                             });
                             if (add) {
+                              setSelectedSlots([
+                                ...selectedSlots,
+                                `${day}:13:00-17:00`,
+                              ]);
                               let copy = timeSlots;
                               copy[day].available.push([780, 1020]);
                               setTimeSlots(copy);
@@ -176,6 +231,16 @@ export default function DocPopup() {
                             //   ...timeSlots,
                             //   [day]: [...timeSlots[day], [780, 1020]],
                             // });
+                          }}
+                          style={{
+                            backgroundColor: selectedSlots.includes(
+                              `${day}:13:00-17:00`
+                            )
+                              ? "rgb(65, 155, 73)"
+                              : "",
+                            color: selectedSlots.includes(`${day}:13:00-17:00`)
+                              ? "white"
+                              : "",
                           }}
                         >
                           13:00 - 17:00
@@ -188,14 +253,34 @@ export default function DocPopup() {
                               if (range[0] === 780) {
                                 timeSlots[day].available.splice(index, 1);
                                 add = false;
+                                let idx = selectedSlots.indexOf(
+                                  `${day}:17:00-20:00`
+                                );
+                                let copySelected = selectedSlots;
+                                copySelected.splice(idx, 1);
+                                setSelectedSlots(copySelected);
                                 return;
                               }
                             });
                             if (add) {
+                              setSelectedSlots([
+                                ...selectedSlots,
+                                `${day}:17:00-20:00`,
+                              ]);
                               let copy = timeSlots;
                               copy[day].available.push([1020, 1200]);
                               setTimeSlots(copy);
                             }
+                          }}
+                          style={{
+                            backgroundColor: selectedSlots.includes(
+                              `${day}:17:00-20:00`
+                            )
+                              ? "rgb(65, 155, 73)"
+                              : "",
+                            color: selectedSlots.includes(`${day}:17:00-20:00`)
+                              ? "white"
+                              : "",
                           }}
                         >
                           17:00 - 20:00

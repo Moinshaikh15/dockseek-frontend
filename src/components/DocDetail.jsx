@@ -13,7 +13,7 @@ export default function DocDetail() {
   let [selectedDay, setSelectedDay] = useState(days[todaysDay]);
   let [selectedSlot, setSelectedSlot] = useState();
   let [selectedDate, setSelectedDate] = useState();
-
+  let [showNotification, setShowNotification] = useState(false);
   let docInfo;
   doctors?.map((doc) => {
     if (doc.docid === docid) {
@@ -48,7 +48,7 @@ export default function DocDetail() {
   let bookAppointment = () => {
     // let date = todaysFullDate(selectedDay);
 
-    var timeParts = selectedSlot.split(":");
+    var timeParts = selectedSlot?.split(":");
     let timeInMinutes = Number(timeParts[0]) * 60 + Number(timeParts[1]);
     let endTime = timeInMinutes + 30;
     var hours = Math.floor(endTime / 60);
@@ -65,29 +65,35 @@ export default function DocDetail() {
       endTime: endTime,
       date: selectedDate,
       flag: "pending",
+      day: selectedDay,
     };
     console.log(data);
-    try {
-      axiosClient.post(`appointment/new`, data).then((res) => {
-        let data = res.data;
-      });
-    } catch (err) {
-      alert(err.message);
-    }
-    try {
-      axiosClient
-        .post(`doctor/${docInfo.docid}/bookslot`, {
-          slot: selectedSlot,
-          day: selectedDay,
-          date: selectedDate,
-        })
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 2000);
+    // try {
+    //   axiosClient.post(`appointment/new`, data).then((res) => {
+    //     let data = res.data;
 
-        .then((res) => {
-          let data = res.data;
-        });
-    } catch (err) {
-      alert(err.message);
-    }
+    //   });
+    // } catch (err) {
+    //   alert(err.message);
+    // }
+    // try {
+    //   axiosClient
+    //     .post(`doctor/${docInfo.docid}/bookslot`, {
+    //       slot: selectedSlot,
+    //       day: selectedDay,
+    //       date: selectedDate,
+    //     })
+
+    //     .then((res) => {
+    //       let data = res.data;
+    //     });
+    // } catch (err) {
+    //   alert(err.message);
+    // }
   };
   let getArr = () => {
     let arr = [];
@@ -109,55 +115,59 @@ export default function DocDetail() {
   }, []);
   return (
     <div className="doc-details">
+      <p
+        className="notification"
+        style={{ display: !showNotification ? "none" : "" }}
+      >
+        Appointment Booked
+      </p>
       <div>
         <div className="left">
           <div>
-            <img src="" alt="" />
+            <img
+              src={docInfo.img !== null ? docInfo.img : "/medical-team.png"}
+              alt=""
+            />
           </div>
 
           <div className="doc-info">
             <h3>Dr.{docInfo?.name}</h3>
+            <p style={{ fontSize: "14px", color: "gray" }}>
+              {docInfo?.speciality}
+            </p>
             <p>{docInfo?.qualification}</p>
-            <p>{docInfo?.speciality}</p>
             <p>{docInfo?.experience} year of experience</p>
-            <p>₹{docInfo?.fees}</p>
+            <p>Fees: ₹{docInfo?.fees}</p>
+            <p>⭐⭐⭐⭐ </p>
           </div>
         </div>
 
         <div className="time-slots">
           <div className="time-slots-div">
-            <label htmlFor="">Select Time Slots</label>
+            <p style={{ fontSize: "18px" }}>Select Time Slots</p>
             <div className="slot-container">
               <div className="days">
                 {slots.map((el, indx) => {
                   return (
                     <div
+                      onClick={() => {
+                        setSelectedSlot("");
+                        setSelectedDay(el.day);
+                        setSelectedDate(el.date);
+                      }}
+                      className="slot-day"
                       style={{
                         backgroundColor:
-                          selectedDay === el.day ? "lightblue" : "",
+                          selectedDay === el.day ? "#3a86ff" : "",
+                        color: selectedDay === el.day ? "white" : "",
                       }}
                     >
                       {days[todaysDay] === el.day ? (
-                        <p
-                          onClick={() => {
-                            setSelectedSlot("");
-                            setSelectedDay(el.day);
-                            setSelectedDate(el.date);
-                          }}
-                        >
-                          Today
-                        </p>
+                        <p>Today</p>
                       ) : (
-                        <div
-                          onClick={() => {
-                            setSelectedSlot("");
-                            setSelectedDay(el.day);
-                            setSelectedDate(el.date);
-                          }}
-                        >
-                          <p>{el.day}</p>
-                          <p>{el.date.substring(0, 4)}</p>
-                        </div>
+                        <p>
+                          {el.day}, {el.date.substring(0, 4)}
+                        </p>
                       )}
                     </div>
                   );
@@ -185,14 +195,26 @@ export default function DocDetail() {
                         style={{
                           backgroundColor:
                             selectedSlot === el
-                              ? "lightblue"
+                              ? "#70e000"
                               : timeSlots[selectedDay].booked.includes(el)
-                              ? "gray"
+                              ? "#e63946"
                               : days[todaysDay] === selectedDay &&
                                 d.toLocaleTimeString() > el
                               ? "lightgray"
                               : "",
+                          color:
+                            selectedSlot === el
+                              ? "white"
+                              : timeSlots[selectedDay].booked.includes(el)
+                              ? "white"
+                              : "",
+                          opacity:
+                            days[todaysDay] === selectedDay &&
+                            d.toLocaleTimeString() > el
+                              ? "0.3"
+                              : "",
                         }}
+                        className="slot-time"
                       >
                         <p>{el}</p>
                       </div>

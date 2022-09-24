@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
@@ -7,14 +7,39 @@ export default function Header() {
     localStorage.removeItem("userInfo");
     goto("/");
   };
+  let [selected, setSelected] = useState("home");
   return (
     <div className="header">
       <div>
         <h3> dockSeek</h3>
         <ul>
-          <li onClick={() => goto("/main/")}>HOME</li>
-          <li onClick={() => goto("/main/appointments")}>APPOINTMENTS</li>
-          <li onClick={() => goto("/main/profile")}>PROFILE</li>
+          <li
+            onClick={() => {
+              setSelected("home");
+              goto("/main/");
+            }}
+            style={{ color: selected === "home" ? "#3a86ff" : "" }}
+          >
+            Home
+          </li>
+          <li
+            onClick={() => {
+              setSelected("appointments");
+              goto("/main/appointments");
+            }}
+            style={{ color: selected === "appointments" ? "#3a86ff" : "" }}
+          >
+            Appointments
+          </li>
+          <li
+            onClick={() => {
+              setSelected("profile");
+              goto("/main/profile");
+            }}
+            style={{ color: selected === "profile" ? "#3a86ff" : "" }}
+          >
+            Profile
+          </li>
         </ul>
         <button onClick={() => logout()}>Logout</button>
       </div>

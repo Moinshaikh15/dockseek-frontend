@@ -8,7 +8,10 @@ export default function Home() {
   let [showDocs, setShowDocs] = useState([]);
   let ref = useRef();
   let [showSpeciality, setShowSpeciality] = useState([]);
+  let [show, setShow] = useState(false);
+  let [price, setPrice] = useState(500);
   let showSpecialities = (e) => {
+    setShow(true);
     if (e.target.value !== "") {
       let arr = [];
       specialities.map((el) => {
@@ -36,41 +39,82 @@ export default function Home() {
       setShowDocs(resultArr);
     } else if (filterType === "price") {
       let resultArr = doctors.filter(
-        (el) => Number(el.fees) >= Number(filterEl)
+        (el) => Number(el.fees) <= Number(filterEl)
       );
       setShowDocs(resultArr);
     }
   };
 
   useEffect(() => {
+    if (showSpeciality.length > 0) {
+      setShow(true);
+    }
     setShowDocs(doctors);
   }, []);
   return (
     <div className="home">
-      <h1>We care For you and Your health</h1>
-      <label htmlFor="search">Search</label>
-      <input
-        type="text"
-        name="search"
-        id="search"
-        ref={ref}
-        onChange={(e) => showSpecialities(e)}
-      />
-      <div className="showSearch">
-        {showSpeciality.map((el) => (
-          <p onClick={() => filterDocs(el, "speciality")} key={Date.now() + el}>
-            {el}
-          </p>
-        ))}
-      </div>
-      <div className="docCard-container">
-        {showDocs?.map((doc) =>
-          userInfo.docid !== doc.docid ? (
-            <DocCard doc={doc} key={doc.docid + Date.now()} />
-          ) : (
-            ""
-          )
-        )}
+      <div className="home-main">
+        <div className="home-top">
+          <h1>We Care For You and Your Health</h1>
+          <div className="find-doc">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Cardiologist"
+              ref={ref}
+              onChange={(e) => showSpecialities(e)}
+            />
+            <label htmlFor="search">
+              <img src="../search.png" alt="" />
+            </label>
+          </div>
+          <div
+            className="showSearch"
+            style={{ display: show ? "flex" : "none" }}
+          >
+            {showSpeciality.map((el) => (
+              <p
+                onClick={() => {
+                  setShow(false);
+                  filterDocs(el, "speciality");
+                }}
+                key={Date.now() + el}
+              >
+                {el}
+              </p>
+            ))}
+          </div>
+
+          <label htmlFor="range">
+            Fees <p>₹ 100 {price !== "100" ? ` - ₹ ${price}` : ""} </p>
+          </label>
+          <input
+            type="range"
+            min="100"
+            max="2000"
+            value={price}
+            className="range"
+            onChange={(e) => {
+              filterDocs(e.target.value, "price");
+              setPrice(e.target.value);
+            }}
+          />
+
+          <img src="../doc.jpg" alt="" className="doc-pattern" />
+        </div>
+        <div className="doctors">
+          <h4>Doctors</h4>
+          <div className="docCard-container">
+            {showDocs?.map((doc) =>
+              userInfo.docid !== doc.docid ? (
+                <DocCard doc={doc} key={doc.docid + Date.now()} />
+              ) : (
+                ""
+              )
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

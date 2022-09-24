@@ -86,11 +86,15 @@ export default function Appointments() {
               onClick={() =>
                 goto("/main/appointments/details", { state: { el } })
               }
-              key={Date.now()+el.id}
+              key={Date.now() + el.id}
             >
-              <p>Date: {el.date}</p>
+              <h4>
+                {el.day}, {el.date}
+              </h4>
               <p>Time: {el.starttime}</p>
-              <p>Doctor: Dr.{el.docname}</p>
+              <div className="doc-name">
+                <h4>Dr.{el.docname}</h4>
+              </div>
             </div>
           ))}
         </div>
@@ -104,11 +108,15 @@ export default function Appointments() {
               onClick={() =>
                 goto("/main/appointments/details", { state: { el } })
               }
-              key={Date.now()+el.id}
+              key={Date.now() + el.id}
             >
-              <p>Date: {el.date}</p>
-              <p>Time: {el.starttime}</p>
-              <p>Doctor: Dr.{el.docname}</p>
+              <h4>
+                {el.day}, {el.date}
+              </h4>
+              <p> {el.starttime}</p>
+              <div className="doc-name">
+                <h4>Dr.{el.docname}</h4>
+              </div>
             </div>
           ))}
         </div>
