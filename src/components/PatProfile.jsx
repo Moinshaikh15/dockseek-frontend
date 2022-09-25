@@ -1,7 +1,10 @@
 import React, { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../axiosConfig";
+import { setPatInfo } from "../slices/userSlice";
 export default function PatProfile() {
+  let dispatch = useDispatch();
   let { userInfo, info } = useSelector((state) => state.user);
   let [gender, setGender] = useState();
   let [bloodGroup, setBloodGroup] = useState();
@@ -12,21 +15,38 @@ export default function PatProfile() {
   let genderRef = useRef();
   let editPatInfo = () => {
     let obj = {};
-    obj.age = ageRef?.current?.value;
-    obj.weight = weightRef?.current?.value;
-    obj.gender = genderRef?.current?.value;
-    obj.bloodGroup = bloodRef?.current?.value;
-console.log(obj)
-    // axiosClient
-    //   .post(`patient/${userInfo.patid}/edit`, obj)
-    //   .then((res) => {
-    //     let data = res.data;
-    //     console.log(data);
-    //   })
-    //   .catch((err) => {
-    //     alert(err.message);
-    //   });
+    obj.age = ageRef?.current?.value !== "" ? ageRef?.current?.value : info.age;
+    obj.weight =
+      weightRef?.current?.value !== ""
+        ? weightRef?.current?.value
+        : info.weight;
+    obj.gender =
+      genderRef?.current?.value !== "select gender"
+        ? genderRef?.current?.value
+        : info.gender;
+    obj.bloodGroup =
+      bloodRef?.current?.value !== "select bloodGroup"
+        ? bloodRef?.current?.value
+        : info.bloodgroup;
+    console.log(obj);
+    axiosClient
+      .post(`patient/${userInfo.patid}/edit`, obj)
+      .then((res) => {
+        let data = res.data;
+        console.log(data);
+        setShowEdit(false);
+        dispatch(setPatInfo(obj));
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
+  useEffect(() => {
+    //ageRef?.current?.value=info.age;
+    // weightRef?.current?.value=info.age;
+    // genderRef?.current?.value=info.age;
+    // bloodRef?.current?.value=info.age;
+  }, []);
   return (
     <>
       <div className="left">
@@ -75,7 +95,7 @@ console.log(obj)
                   type="number"
                   id="weight"
                   name="weight"
-                  value={info?.weight}
+                  //value={info?.weight}
                   ref={weightRef}
                 />
               </div>
@@ -85,7 +105,7 @@ console.log(obj)
                   type="number"
                   id="age"
                   name="age"
-                  value={info?.age}
+                  // value={info?.age}
                   ref={ageRef}
                 />
               </div>
@@ -96,7 +116,7 @@ console.log(obj)
                 name="gender"
                 id="gender"
                 onChange={(e) => setGender(e.target.value)}
-                value={info?.gender}
+                //value={info?.gender}
                 ref={genderRef}
               >
                 <option value="select gender" label="Select gender">
@@ -120,7 +140,7 @@ console.log(obj)
                 name="bloodGroup"
                 id="bloodGroup"
                 onChange={(e) => setBloodGroup(e.target.value)}
-                value={info?.bloodgroup}
+                // value={info?.bloodgroup}
                 ref={bloodRef}
               >
                 <option value="select bloodGroup" label="Blood Groups">
@@ -152,7 +172,7 @@ console.log(obj)
                 </option>
               </select>
             </div>
-            <button className="save" onClick={editPatInfo()}>
+            <button className="save" onClick={() => editPatInfo()}>
               Save
             </button>
           </div>

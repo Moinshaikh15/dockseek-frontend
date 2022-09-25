@@ -21,10 +21,6 @@ export default function DocPopup() {
   });
   let [selectedSlots, setSelectedSlots] = useState([]);
   let saveDocInfo = async (obj) => {
-    // obj.docId = userInfo.docid;
-    // obj.timeSlots = timeSlots;
-    // obj.name = userInfo.name;
-
     let newForm = new FormData();
     newForm.append("qualification", obj.qualification);
     newForm.append("experience", obj.experience);
@@ -48,7 +44,7 @@ export default function DocPopup() {
         alert(err.message);
       });
   };
-  console.log(selectedSlots);
+
   return (
     <div className="doc-form">
       <h2>Hey Doc! Tell Us About Your Self</h2>

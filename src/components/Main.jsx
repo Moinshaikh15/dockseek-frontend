@@ -54,7 +54,6 @@ export default function Main() {
         alert(err.message);
       });
   };
-  console.log(info);
   useEffect(() => {
     if (userInfo?.docid !== null) {
       getDocInfo();
@@ -67,7 +66,7 @@ export default function Main() {
     <div className="main">
       {info === null || info === "" ? (
         <div className="popup-div">
-          {userInfo.docid !== null ? <DocPopup /> : <PatPopup />}
+          {userInfo?.docid !== null ? <DocPopup /> : <PatPopup />}
         </div>
       ) : (
         ""

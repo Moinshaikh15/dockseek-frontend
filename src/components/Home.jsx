@@ -8,12 +8,13 @@ export default function Home() {
   let { doctors, specialities, showDocs } = useSelector(
     (state) => state.otherInfo
   );
-  //let [showDocs, setShowDocs] = useState([]);
+  // let [showDocs, setShowDocs] = useState([]);
   let ref = useRef();
   let dispatch = useDispatch();
   let [showSpeciality, setShowSpeciality] = useState([]);
   let [show, setShow] = useState(false);
   let [price, setPrice] = useState(500);
+
   let showSpecialities = (e) => {
     setShow(true);
     if (e.target.value !== "") {
@@ -47,7 +48,6 @@ export default function Home() {
     //   setShowDocs(resultArr);
     // }
   };
-  console.log(showDocs)
 
   useEffect(() => {
     if (showSpeciality.length > 0) {

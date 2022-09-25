@@ -14,13 +14,30 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
-      
     },
     setInfo: (state, action) => {
       state.info = action.payload;
+    },
+    setDocInfo: (state, action) => {
+      let copyInfo = state.info;
+      let obj = action.payload;
+      copyInfo.qualification = obj.qualification;
+      copyInfo.speciality = obj.speciality;
+      copyInfo.experience = obj.experience;
+      copyInfo.hospital = obj.hospital;
+      state.info = copyInfo;
+    },
+    setPatInfo: (state, action) => {
+      let copyInfo = state.info;
+      let obj = action.payload;
+      copyInfo.age = obj.age;
+      copyInfo.weight = obj.weight;
+      copyInfo.bloodgroup = obj.bloodgroup;
+      copyInfo.gender = obj.gender;
+      state.info = copyInfo;
     },
   },
 });
 
 export default userSlice.reducer;
-export const { setUser,setInfo } = userSlice.actions;
+export const { setUser, setInfo, setDocInfo,setPatInfo } = userSlice.actions;

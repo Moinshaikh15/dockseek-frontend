@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../axiosConfig";
-import { setAppointments } from "../slices/infoSlice";
+import { setAppointments, sortAppointments } from "../slices/infoSlice";
 let todaysDate;
 export default function Appointments() {
   let dispatch = useDispatch();
   let goto = useNavigate();
   let { userInfo } = useSelector((state) => state.user);
-  let { appointments } = useSelector((state) => state.otherInfo);
-  let [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  let [pastAppointments, setPastAppointments] = useState([]);
+  let { todaysAppointments, upcomingAppointments, pastAppointments } =
+    useSelector((state) => state.otherInfo);
+  // let [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  // let [pastAppointments, setPastAppointments] = useState([]);
   const d = new Date();
 
   let getAllAppo = () => {
@@ -18,6 +19,9 @@ export default function Appointments() {
       axiosClient.get(`appointment/`).then((res) => {
         let data = res.data;
         dispatch(setAppointments(data));
+        dispatch(
+          sortAppointments({ docid: userInfo.docid, patid: userInfo.patid })
+        );
       });
     } catch (err) {
       alert(err.message);
@@ -35,48 +39,77 @@ export default function Appointments() {
     return [year, month, day].join("-");
   };
 
-  let getAppo = () => {
-    let upcomingAppointments = [];
-    let pastAppointments = [];
-    appointments.map((el) => {
-      if (
-        el.docid === userInfo.docid ||
-        el.patid === userInfo.docid ||
-        el.patid === userInfo.patid
-      ) {
-        el = { ...el };
-        let AppoDate = el.date.split("T")[0];
-        el.date = AppoDate;
-        // if (todaysDate === AppoDate) {
-        //   console.log(d.toLocaleTimeString() < el.starttime);
-        //   if (d.toLocaleTimeString() < el.starttime) {
-        //     upcomingAppointments.push(el);
-        //   } else {
-        //     pastAppointments.push(el);
-        //   }
-        // } else if (todaysDate > AppoDate) {
-        //   pastAppointments.push(el);
-        // } else {
-        //   upcomingAppointments.push(el);
-        // }
-        if (el.flag === "pending") {
-          upcomingAppointments.push(el);
-        } else {
-          pastAppointments.push(el);
-        }
-      }
-    });
-    setUpcomingAppointments(upcomingAppointments);
-    setPastAppointments(pastAppointments);
-  };
-  todaysFullDate();
-
+  //let getAppo = () => {
+  // let upcomingAppointments = [];
+  // let pastAppointments = [];
+  // appointments.map((el) => {
+  //   if (
+  //     el.docid === userInfo.docid ||
+  //     el.patid === userInfo.docid ||
+  //     el.patid === userInfo.patid
+  //   ) {
+  //     el = { ...el };
+  //     let AppoDate = el.date.split("T")[0];
+  //     el.date = AppoDate;
+  // if (todaysDate === AppoDate) {
+  //   console.log(d.toLocaleTimeString() < el.starttime);
+  //   if (d.toLocaleTimeString() < el.starttime) {
+  //     upcomingAppointments.push(el);
+  //   } else {
+  //     pastAppointments.push(el);
+  //   }
+  // } else if (todaysDate > AppoDate) {
+  //   pastAppointments.push(el);
+  // } else {
+  //   upcomingAppointments.push(el);
+  // }
+  //   if (el.flag === "pending") {
+  //     upcomingAppointments.push(el);
+  //   } else {
+  //     pastAppointments.push(el);
+  //   }
+  // }
+  //   });
+  //   // setUpcomingAppointments(upcomingAppointments);
+  //   // setPastAppointments(pastAppointments);
+  // };
+  // todaysFullDate();
+  console.log(upcomingAppointments, pastAppointments);
   useEffect(() => {
     getAllAppo();
-    getAppo();
+    // getAppo();
   }, []);
   return (
     <div className="appointments">
+      <div className="appo-container">
+        <h4>Todays Appointments</h4>
+        <div className="appoCard-container">
+          {todaysAppointments.map((el) => (
+            <div
+              className="appointment-Card"
+              onClick={() =>
+                goto("/main/appointments/details", {
+                  state: { el, status: "past" },
+                })
+              }
+              key={Date.now() + el.id}
+            >
+              <h4>
+                {el.day}, {el.date}
+              </h4>
+              <p> {el.starttime}</p>
+              <div className="doc-name">
+                {userInfo.docid === null ? (
+                  <h4>Dr.{el.docname}</h4>
+                ) : (
+                  <h4> Patient {el.patname}</h4>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="appo-container">
         <h4>Upcoming Appointments</h4>
         <div className="appoCard-container">
@@ -84,7 +117,9 @@ export default function Appointments() {
             <div
               className="appointment-Card"
               onClick={() =>
-                goto("/main/appointments/details", { state: { el } })
+                goto("/main/appointments/details", {
+                  state: { el, status: "upcoming" },
+                })
               }
               key={Date.now() + el.id}
             >
@@ -93,7 +128,15 @@ export default function Appointments() {
               </h4>
               <p>Time: {el.starttime}</p>
               <div className="doc-name">
-                <h4>Dr.{el.docname}</h4>
+                {userInfo.docid === null ? (
+                  <h4>Dr.{el.docname}</h4>
+                ) : (
+                  <h4>
+                    {" "}
+                    <span style={{ fontWeight: "400" }}>Patient:</span>{" "}
+                    {el.patname}
+                  </h4>
+                )}
               </div>
             </div>
           ))}
@@ -106,7 +149,9 @@ export default function Appointments() {
             <div
               className="appointment-Card"
               onClick={() =>
-                goto("/main/appointments/details", { state: { el } })
+                goto("/main/appointments/details", {
+                  state: { el, status: "past" },
+                })
               }
               key={Date.now() + el.id}
             >
@@ -115,7 +160,11 @@ export default function Appointments() {
               </h4>
               <p> {el.starttime}</p>
               <div className="doc-name">
-                <h4>Dr.{el.docname}</h4>
+                {userInfo.docid === null ? (
+                  <h4>Dr.{el.docname}</h4>
+                ) : (
+                  <h4> Patient {el.patname}</h4>
+                )}
               </div>
             </div>
           ))}
