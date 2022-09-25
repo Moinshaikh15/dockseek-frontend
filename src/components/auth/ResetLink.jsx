@@ -6,16 +6,15 @@ export default function ResetLink() {
   let goto = useNavigate();
   let passRef = useRef();
   let resetPass = async () => {
-    try {
-      axiosClient
-        .post(`auth/${code}/resetpass`, { password: passRef.current.value })
-        .then((res) => {
-          let data = res.data;
-          goto("/");
-        });
-    } catch (err) {
-      alert(err.message);
-    }
+    axiosClient
+      .post(`auth/${code}/resetpass`, { password: passRef.current.value })
+      .then((res) => {
+        let data = res.data;
+        goto("/");
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
   return (
     <div className="reset">

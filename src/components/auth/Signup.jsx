@@ -23,19 +23,21 @@ export default function Signup() {
       id = "1" + id;
       obj.patId = id;
     }
-    try {
-      axiosClient.post("/auth/signup", obj).then((res) => {
+
+    axiosClient
+      .post("/auth/signup", obj)
+      .then((res) => {
         let data = res.data;
         goto("/");
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
 
   return (
     <div className="signup">
-      <img src="../dockSeekLogin.png" alt="" className="pattern"/>
+      <img src="../dockSeekLogin.png" alt="" className="pattern" />
 
       <h2>DockSeek</h2>
       <div>

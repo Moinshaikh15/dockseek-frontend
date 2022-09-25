@@ -9,17 +9,23 @@ export default function Login() {
   let dispatch = useDispatch();
   let goto = useNavigate();
   let login = async (obj) => {
-    try {
-      axiosClient.post("/auth/login", obj).then((res) => {
+    axiosClient
+      .post("/auth/login", obj)
+      .then((res) => {
         let data = res.data;
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        dispatch(setUser(data.userInfo));
-        goto("/main");
+        if (res.status === 200) {
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          dispatch(setUser(data.userInfo));
+          goto("/main");
+        } else if (res.status === 400) {
+          alert(res.response);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
 
   //   let handleChange = (e) => {
@@ -28,7 +34,7 @@ export default function Login() {
   return (
     <div className="login">
       <h2>DockSeek</h2>
-      <img src="../dockSeekLogin.png" alt="" className="pattern"/>
+      <img src="../dockSeekLogin.png" alt="" className="pattern" />
       <div>
         <Formik
           initialValues={{

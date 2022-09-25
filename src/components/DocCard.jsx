@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function DocCard({ doc }) {
   let goto = useNavigate();
+  
   return (
     <div
       className="doc-Card"

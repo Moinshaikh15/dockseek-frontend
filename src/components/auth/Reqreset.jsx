@@ -3,16 +3,15 @@ import axiosClient from "../../axiosConfig";
 export default function Reqreset() {
   let emailRef = useRef();
   let resetPass = async () => {
-    try {
-      axiosClient
-        .post(`auth/reqreset`, { email: emailRef.current.value })
-        .then((res) => {
-          let data = res.data;
-          console.log(data);
-        });
-    } catch (err) {
-      alert(err.message);
-    }
+    axiosClient
+      .post(`auth/reqreset`, { email: emailRef.current.value })
+      .then((res) => {
+        let data = res.data;
+        console.log(data);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
   return (
     <div className="reset">

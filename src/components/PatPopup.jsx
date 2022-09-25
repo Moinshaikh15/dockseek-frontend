@@ -18,20 +18,26 @@ export default function PatPopup() {
     obj.bloodGroup = bloodGroup;
     obj.pastIssues = { pastIssueFields };
     console.log(obj);
-    try {
+   
       axiosClient.post(`patient/new`, obj).then((res) => {
         let data = res.data;
         console.log(data);
+      }).catch((err)=>{
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
+   
   };
 
   let handleInputChange = (e, index) => {
     let data = [...pastIssueFields];
     data[index][e.target.name] = e.target.value;
     setPastIssueFields(data);
+    e.persist();
+    const caretStart = e.target.selectionStart;
+    const caretEnd = e.target.selectionEnd;
+    // update the state and reset the caret
+    this.updateState();
+    e.target.setSelectionRange(caretStart, caretEnd);
   };
   let addFields = () => {
     setPastIssueFields([...pastIssueFields, { issueName: "", years: "" }]);
@@ -59,7 +65,7 @@ export default function PatPopup() {
             }}
           >
             {({ isSubmitting }) => (
-              <Form className="popup-Form" style={{height:"400px"}}>
+              <Form className="popup-Form" style={{ height: "450px" }}>
                 <div className="contact-div">
                   <div className="field">
                     <label htmlFor="age">Age</label>
@@ -158,33 +164,51 @@ export default function PatPopup() {
 
                 <div className="past-issues-container">
                   <label htmlFor="location">Past Issues</label>
-                  {pastIssueFields.map((field, index) => {
-                    return (
-                      <div className="issues" key={Date.now() +'fff'+index}>
-                        <input
-                          type="text"
-                          id="issue-name"
-                          name="issueName"
-                          placeholder="Issue name"
-                          value={field.issueName}
-                          onChange={(e) => handleInputChange(e, index, "name")}
-                        ></input>
-                        <input
-                          type="text"
-                          id="issue-year"
-                          name="years"
-                          placeholder="Issue last for"
-                          value={field.years}
-                          onChange={(e) => handleInputChange(e, index, "year")}
-                        ></input>
-                      </div>
-                    );
-                  })}
-                  <button type="button" onClick={() => addFields()} className='add-btn'>
+                  <div className="issue-div">
+                    {pastIssueFields.map((field, index) => {
+                      return (
+                        <div
+                          className="issues"
+                          key={Date.now() + "fff" + index}
+                        >
+                          <input
+                            type="text"
+                            id="issue-name"
+                            name="issueName"
+                            placeholder="Issue name"
+                            value={field.issueName}
+                            onChange={(e) =>
+                              handleInputChange(e, index, "name")
+                            }
+                            //   onFocus={(e) => {
+                            //     e.target.selectionStart =this.cursor;
+                            // }}
+                          ></input>
+                          <input
+                            type="text"
+                            id="issue-year"
+                            name="years"
+                            placeholder="Issue last for"
+                            value={field.years}
+                            onChange={(e) =>
+                              handleInputChange(e, index, "year")
+                            }
+                          ></input>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => addFields()}
+                    className="add-btn"
+                  >
                     Add more Fields
                   </button>
                 </div>
-                <button type="submit" className="save-btn">Save</button>
+                <button type="submit" className="save-btn">
+                  Save
+                </button>
               </Form>
             )}
           </Formik>

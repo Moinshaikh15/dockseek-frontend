@@ -17,13 +17,12 @@ export default function AppoDetails() {
     }
   };
   let cancelAppointment = () => {
-    try {
-      axiosClient
-        .post(`appointment/${el.id}/update`, { flag: "cancel" })
-        .then((res) => {});
-    } catch (err) {
-      alert(err.message);
-    }
+    axiosClient
+      .post(`appointment/${el.id}/update`, { flag: "cancel" })
+      .then((res) => {})
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (
@@ -41,7 +40,7 @@ export default function AppoDetails() {
           <p>Fees: ₹{el.fees}</p>
         </div>
         <div className="note-div">
-          <p style={{fontSize:"18px"}}>Note/Remark</p>
+          <p style={{ fontSize: "18px" }}>Note/Remark</p>
           <p>{el.note}</p>
         </div>
         {userInfo.docid !== null ? (

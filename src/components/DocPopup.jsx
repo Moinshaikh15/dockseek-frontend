@@ -36,15 +36,17 @@ export default function DocPopup() {
     newForm.append("name", userInfo.name);
     newForm.append("timeSlots", JSON.stringify(timeSlots));
     newForm.append("docId", userInfo.docid);
+    newForm.append("fees", obj.fees);
 
-    try {
-      axiosClient.post(`doctor/new`, newForm).then((res) => {
+    axiosClient
+      .post(`doctor/new`, newForm)
+      .then((res) => {
         let data = res.data;
         console.log(data);
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
   console.log(selectedSlots);
   return (

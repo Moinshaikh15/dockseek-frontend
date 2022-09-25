@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setShowDoc } from "../slices/infoSlice";
 import DocCard from "./DocCard";
 
 export default function Home() {
   let { userInfo } = useSelector((state) => state.user);
-  let { doctors, specialities } = useSelector((state) => state.otherInfo);
-  let [showDocs, setShowDocs] = useState([]);
+  let { doctors, specialities, showDocs } = useSelector(
+    (state) => state.otherInfo
+  );
+  //let [showDocs, setShowDocs] = useState([]);
   let ref = useRef();
+  let dispatch = useDispatch();
   let [showSpeciality, setShowSpeciality] = useState([]);
   let [show, setShow] = useState(false);
   let [price, setPrice] = useState(500);
@@ -26,30 +30,30 @@ export default function Home() {
     }
   };
   let filterDocs = (filterEl, filterType) => {
-    if (filterType === "speciality") {
-      let resultArr = doctors.filter((el) => {
-        el = { ...el };
-        el.speciality = el.speciality.toLowerCase();
-        if (el.speciality === filterEl || el.speciality.includes(filterEl)) {
-          console.log("yy");
-          return el;
-        }
-      });
-      console.log(resultArr);
-      setShowDocs(resultArr);
-    } else if (filterType === "price") {
-      let resultArr = doctors.filter(
-        (el) => Number(el.fees) <= Number(filterEl)
-      );
-      setShowDocs(resultArr);
-    }
+    dispatch(setShowDoc({ filterEl, filterType }));
+    // if (filterType === "speciality") {
+    //   let resultArr = doctors.filter((el) => {
+    //     el = { ...el };
+    //     el.speciality = el.speciality.toLowerCase();
+    //     if (el.speciality === filterEl || el.speciality.includes(filterEl)) {
+    //       return el;
+    //     }
+    //   });
+    //   setShowDocs(resultArr);
+    // } else if (filterType === "price") {
+    //   let resultArr = doctors.filter(
+    //     (el) => Number(el.fees) <= Number(filterEl)
+    //   );
+    //   setShowDocs(resultArr);
+    // }
   };
+  console.log(showDocs)
 
   useEffect(() => {
     if (showSpeciality.length > 0) {
       setShow(true);
     }
-    setShowDocs(doctors);
+    // setShowDocs(doctors);
   }, []);
   return (
     <div className="home">
@@ -107,8 +111,8 @@ export default function Home() {
           <h4>Doctors</h4>
           <div className="docCard-container">
             {showDocs?.map((doc) =>
-              userInfo.docid !== doc.docid ? (
-                <DocCard doc={doc} key={doc.docid + Date.now()} />
+              userInfo?.docid !== doc?.docid ? (
+                <DocCard doc={doc} key={doc?.docid + Date.now()} />
               ) : (
                 ""
               )

@@ -15,40 +15,44 @@ export default function Main() {
   //get users info if he is a doc
   let getDocInfo = async () => {
     let docId = userInfo?.docid;
-    try {
-      axiosClient.get(`doctor/${docId}`).then((res) => {
+
+    axiosClient
+      .get(`doctor/${docId}`)
+      .then((res) => {
         let data = res.data;
         dispatch(setInfo(data));
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
 
   // get users inof if he is patient
   let getPatient = async () => {
     let patId = userInfo?.patid;
 
-    try {
-      axiosClient.get(`patient/${patId}`).then((res) => {
+    axiosClient
+      .get(`patient/${patId}`)
+      .then((res) => {
         let data = res.data;
         dispatch(setInfo(data));
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
 
   //get all doc's
   let getAllDocs = () => {
-    try {
-      axiosClient.get(`doctor/`).then((res) => {
+    axiosClient
+      .get(`doctor/`)
+      .then((res) => {
         let data = res.data;
         dispatch(setDoctors(data));
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    } catch (err) {
-      alert(err.message);
-    }
   };
   console.log(info);
   useEffect(() => {

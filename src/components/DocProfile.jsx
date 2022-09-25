@@ -6,7 +6,7 @@ export default function DocProfile() {
   return (
     <>
       <div className="left">
-        <p>Past Health Issues</p>
+        <p>Total Earnings</p>
         <div>
           {info?.pastissues?.pastIssueFields.map((issue) =>
             issue.issueName !== "" ? (

@@ -72,28 +72,28 @@ export default function DocDetail() {
     setTimeout(() => {
       setShowNotification(false);
     }, 2000);
-    // try {
-    //   axiosClient.post(`appointment/new`, data).then((res) => {
-    //     let data = res.data;
 
-    //   });
-    // } catch (err) {
-    //   alert(err.message);
-    // }
-    // try {
-    //   axiosClient
-    //     .post(`doctor/${docInfo.docid}/bookslot`, {
-    //       slot: selectedSlot,
-    //       day: selectedDay,
-    //       date: selectedDate,
-    //     })
+    axiosClient
+      .post(`appointment/new`, data)
+      .then((res) => {
+        let data = res.data;
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
 
-    //     .then((res) => {
-    //       let data = res.data;
-    //     });
-    // } catch (err) {
-    //   alert(err.message);
-    // }
+    axiosClient
+      .post(`doctor/${docInfo.docid}/bookslot`, {
+        slot: selectedSlot,
+        day: selectedDay,
+        date: selectedDate,
+      })
+      .then((res) => {
+        let data = res.data;
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
   let getArr = () => {
     let arr = [];
