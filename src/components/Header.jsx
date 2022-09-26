@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
@@ -8,6 +9,15 @@ export default function Header() {
     goto("/");
   };
   let [selected, setSelected] = useState("home");
+  let url = window.location.href;
+  useEffect(() => {
+    if (url.split("main")[1].includes("/appointments")) {
+      setSelected("appointments");
+    }
+    if (url.split("main")[1].includes("/profile")) {
+      setSelected("profile");
+    }
+  }, []);
   return (
     <div className="header">
       <div>

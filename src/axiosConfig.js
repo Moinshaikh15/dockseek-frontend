@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "https://dockseek-ms.herokuapp.com/",
   headers: {
     "Content-type": "application/json",
   },
@@ -29,15 +29,15 @@ axiosClient.interceptors.response.use(
     if (statusCode === 400 && originalConfig.url === "auth/token") {
       return Promise.reject(err);
     }
-    if (statusCode === 400) {
-      originalConfig.attemptMade = true;
-      let tokenResponse = await axiosClient.post("/auth/token", {
-        token: localStorage.getItem("refreshToken"),
-      });
-      localStorage.setItem("accessToken", tokenResponse.data.accessToken);
-      return axiosClient(originalConfig);
-    }
-    return Promise.reject(err);
+    // if (statusCode === 400) {
+    //   originalConfig.attemptMade = true;
+    //   let tokenResponse = await axiosClient.post("/auth/token", {
+    //     token: localStorage.getItem("refreshToken"),
+    //   });
+    //   localStorage.setItem("accessToken", tokenResponse.data.accessToken);
+    //   return axiosClient(originalConfig);
+    // }
+    // return Promise.reject(err);
   }
 );
 

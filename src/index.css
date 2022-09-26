@@ -267,7 +267,7 @@ a {
 }
 .popup-Form .time-slots-div {
   position: absolute;
-  top: 164px;
+  top: 171px;
   right: 20px;
   width: 400px;
   height: 300px;
@@ -527,7 +527,7 @@ a {
 
 .home .doc-Card {
   width: 220px;
-  height: 280px;
+  height: 270px;
   padding: 10px;
   border: 1px solid #f0f0f5;
   box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
@@ -557,7 +557,7 @@ a {
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid;
+  border: 1px solid rgb(190, 188, 188);
   object-fit: cover;
 }
 
@@ -584,7 +584,6 @@ a {
 .doc-details > div {
   width: 100%;
   height: 500px;
-  border: 1px solid;
   display: flex;
   gap: 10px;
   padding: 10px;
@@ -682,6 +681,7 @@ a {
 }
 .appointments .appo-container {
   width: 350px;
+  height: 620px;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -765,7 +765,7 @@ a {
   gap: 10px;
   justify-content: flex-start;
 }
-.appo-Details .start{
+.appo-Details .start {
   padding: 5px;
   background-color: #3a86ff;
   color: white;
@@ -774,25 +774,25 @@ a {
   margin-top: 10px;
 }
 .notes-container button {
-padding: 5px;
-background-color: #3a86ff;
-color: white;
-border: none;
-border-radius: 5px;
+  padding: 5px;
+  background-color: #3a86ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
 }
-.notes-container .cancel{
+.notes-container .cancel {
   background-color: #d90429;
   position: absolute;
   left: 20px;
   bottom: 20px;
 }
-.notes-container .done{
+.notes-container .done {
   background-color: #5adc53;
   position: absolute;
   left: 20px;
   bottom: 20px;
 }
-.notes-container textarea{
+.notes-container textarea {
   padding: 10px;
   outline: none;
 }
@@ -810,14 +810,22 @@ border-radius: 5px;
 
 .profile .left {
   width: 70vw;
-  height: 85vh;
+  height: 88vh;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
   padding: 20px;
+  position: relative;
+}
+.profile .left img {
+  width: 350px;
+  position: absolute;
+  bottom: 10px;
 }
 .left .issues-div {
   padding: 10px;
   width: 600px;
+  height: 250px;
+  overflow-y: auto;
 }
 .left .issue {
   display: flex;
@@ -830,7 +838,7 @@ border-radius: 5px;
 
 .profile .right {
   width: 30vw;
-  height: 85vh;
+  height: 88vh;
   background-color: #3a86ff;
   box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
   color: white;
@@ -839,6 +847,21 @@ border-radius: 5px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.profile .right .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
+}
+.profile .right img {
+  width: 150px;
+  border-radius: 5px;
+}
+.profile .right .main-info {
+  display: flex;
+  gap: 15px;
 }
 .right .edit {
   padding: 5px;
@@ -880,6 +903,7 @@ border-radius: 5px;
   gap: 5px;
 }
 .edit-div .field input {
+  width: 100%;
   border-radius: 5px;
   padding: 4px;
   outline: none;

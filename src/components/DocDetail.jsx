@@ -15,13 +15,17 @@ export default function DocDetail() {
   let [selectedDate, setSelectedDate] = useState();
   let [showNotification, setShowNotification] = useState(false);
   let docInfo;
+  useEffect(() => {}, []);
   doctors?.map((doc) => {
     if (doc.docid === docid) {
       docInfo = doc;
     }
   });
   let timeSlots = docInfo?.timeslots;
-
+  let ratings = [];
+  for (let i = 0; i < docInfo?.rating; i++) {
+    ratings.push("⭐");
+  }
   // let todaysFullDate = (selectedDay) => {
   //   let diff = days.indexOf(selectedDay) - todaysDay;
   //   let d = new Date();
@@ -46,8 +50,6 @@ export default function DocDetail() {
   // };
 
   let bookAppointment = () => {
-    // let date = todaysFullDate(selectedDay);
-
     var timeParts = selectedSlot?.split(":");
     let timeInMinutes = Number(timeParts[0]) * 60 + Number(timeParts[1]);
     let endTime = timeInMinutes + 30;
@@ -63,11 +65,10 @@ export default function DocDetail() {
       patName: userInfo.name,
       startTime: selectedSlot,
       endTime: endTime,
-      date: selectedDate,
+      date: selectedDate !== undefined ? selectedDate : slots[0].date,
       flag: "pending",
       day: selectedDay,
     };
-    console.log(data);
     setShowNotification(true);
     setTimeout(() => {
       setShowNotification(false);
@@ -95,23 +96,32 @@ export default function DocDetail() {
         alert(err.message);
       });
   };
-  let getArr = () => {
+  let getSortedDates = () => {
     let arr = [];
-    Object.keys(timeSlots).map((day) => {
-      let copyDay = { ...timeSlots[day] };
-      copyDay.day = day;
-      arr.push(copyDay);
-    });
-    arr.sort((a, b) => {
-      var aa = a.date.split("/").reverse().join(),
-        bb = b.date.split("/").reverse().join();
-      return aa < bb ? -1 : aa > bb ? 1 : 0;
-    });
-    setSlots(arr);
-    setSelectedDate(slots[0]?.date);
+    if (timeSlots !== undefined) {
+      Object.keys(timeSlots)?.map((day) => {
+        let copyDay = { ...timeSlots[day] };
+        copyDay.day = day;
+        arr.push(copyDay);
+      });
+      arr.sort((a, b) => {
+        // var aa = a.date.split("/").reverse().join(),
+        //   bb = b.date.split("/").reverse().join();
+
+        let [dayA, monthA, yearA] = a.date.split("-");
+        let aa = new Date(+yearA, monthA - 1, +dayA);
+        let [dayB, monthB, yearB] = b.date.split("-");
+        let bb = new Date(+yearB, monthB - 1, +dayB);
+
+        return aa - bb;
+        //return aa < bb ? -1 : aa > bb ? 1 : 0;
+      });
+      setSlots(arr);
+      setSelectedDate(() => slots[0]?.date);
+    }
   };
   useEffect(() => {
-    getArr();
+    getSortedDates();
   }, []);
   return (
     <div className="doc-details">
@@ -125,7 +135,7 @@ export default function DocDetail() {
         <div className="left">
           <div>
             <img
-              src={docInfo.img !== null ? docInfo.img : "/medical-team.png"}
+              src={docInfo?.img !== null ? docInfo?.img : "/medical-team.png"}
               alt=""
             />
           </div>
@@ -138,7 +148,11 @@ export default function DocDetail() {
             <p>{docInfo?.qualification}</p>
             <p>{docInfo?.experience} year of experience</p>
             <p>Fees: ₹{docInfo?.fees}</p>
-            <p>⭐⭐⭐⭐ </p>
+            <div style={{ display: "flex" }}>
+              {ratings.map((el) => (
+                <p>{el}</p>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -174,52 +188,55 @@ export default function DocDetail() {
                 })}
               </div>
               <div className="availableSlots-container">
-                {timeSlots[selectedDay].available?.length === 0 ? (
-                  <div>
-                    <p>No slots availabe on this day</p>
-                  </div>
-                ) : (
-                  timeSlots[selectedDay].available?.map((el) => {
-                    return (
-                      <div
-                        onClick={() => {
-                          if (!timeSlots[selectedDay].booked.includes(el)) {
-                            if (days[todaysDay] === selectedDay) {
-                              if (d.toLocaleTimeString() < el)
+                {timeSlots !== undefined ? (
+                  timeSlots[selectedDay].available?.length === 0 ? (
+                    <div>
+                      <p>No slots availabe on this day</p>
+                    </div>
+                  ) : (
+                    timeSlots[selectedDay].available?.map((el) => {
+                      return (
+                        <div
+                          onClick={() => {
+                            if (!timeSlots[selectedDay].booked.includes(el)) {
+                              if (days[todaysDay] === selectedDay) {
+                                if (d.toTimeString() < el) setSelectedSlot(el);
+                              } else {
                                 setSelectedSlot(el);
-                            } else {
-                              setSelectedSlot(el);
+                              }
                             }
-                          }
-                        }}
-                        style={{
-                          backgroundColor:
-                            selectedSlot === el
-                              ? "#70e000"
-                              : timeSlots[selectedDay].booked.includes(el)
-                              ? "#e63946"
-                              : days[todaysDay] === selectedDay &&
-                                d.toLocaleTimeString() > el
-                              ? "lightgray"
-                              : "",
-                          color:
-                            selectedSlot === el
-                              ? "white"
-                              : timeSlots[selectedDay].booked.includes(el)
-                              ? "white"
-                              : "",
-                          opacity:
-                            days[todaysDay] === selectedDay &&
-                            d.toLocaleTimeString() > el
-                              ? "0.3"
-                              : "",
-                        }}
-                        className="slot-time"
-                      >
-                        <p>{el}</p>
-                      </div>
-                    );
-                  })
+                          }}
+                          style={{
+                            backgroundColor:
+                              selectedSlot === el
+                                ? "#70e000"
+                                : timeSlots[selectedDay].booked.includes(el)
+                                ? "#e63946"
+                                : days[todaysDay] === selectedDay &&
+                                  d.toTimeString() > el
+                                ? "lightgray"
+                                : "",
+                            color:
+                              selectedSlot === el
+                                ? "white"
+                                : timeSlots[selectedDay].booked.includes(el)
+                                ? "white"
+                                : "",
+                            opacity:
+                              days[todaysDay] === selectedDay &&
+                              d.toTimeString() > el
+                                ? "0.3"
+                                : "",
+                          }}
+                          className="slot-time"
+                        >
+                          <p>{el}</p>
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  ""
                 )}
               </div>
             </div>

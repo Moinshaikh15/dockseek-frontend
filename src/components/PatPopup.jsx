@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../axiosConfig";
+import { useDebugValue } from "react";
+import { setInfo } from "../slices/userSlice";
 export default function PatPopup() {
+  let dispatch = useDispatch();
   let { userInfo } = useSelector((state) => state.user);
   let [pastIssueFields, setPastIssueFields] = useState([
     { issueName: "", years: "" },
@@ -18,26 +21,32 @@ export default function PatPopup() {
     obj.bloodGroup = bloodGroup;
     obj.pastIssues = { pastIssueFields };
     console.log(obj);
-   
-      axiosClient.post(`patient/new`, obj).then((res) => {
+
+    axiosClient
+      .post(`patient/new`, obj)
+      .then((res) => {
         let data = res.data;
         console.log(data);
-      }).catch((err)=>{
+      })
+      .catch((err) => {
         alert(err.message);
       });
-   
+    axiosClient
+      .get(`patient/${userInfo.patid}`)
+      .then((res) => {
+        let data = res?.data;
+        dispatch(setInfo(data));
+      })
+      .catch((err) => {
+        // alert(err.message);
+      });
   };
 
   let handleInputChange = (e, index) => {
     let data = [...pastIssueFields];
     data[index][e.target.name] = e.target.value;
-    setPastIssueFields(data);
-    e.persist();
-    const caretStart = e.target.selectionStart;
-    const caretEnd = e.target.selectionEnd;
-    // update the state and reset the caret
-    this.updateState();
-    e.target.setSelectionRange(caretStart, caretEnd);
+    setPastIssueFields(() => data);
+    console.log(pastIssueFields);
   };
   let addFields = () => {
     setPastIssueFields([...pastIssueFields, { issueName: "", years: "" }]);
@@ -167,19 +176,14 @@ export default function PatPopup() {
                   <div className="issue-div">
                     {pastIssueFields.map((field, index) => {
                       return (
-                        <div
-                          className="issues"
-                          key={Date.now() + "fff" + index}
-                        >
+                        <div className="issues" key={"fff" + index}>
                           <input
                             type="text"
                             id="issue-name"
                             name="issueName"
                             placeholder="Issue name"
                             value={field.issueName}
-                            onChange={(e) =>
-                              handleInputChange(e, index, "name")
-                            }
+                            onChange={(e) => handleInputChange(e, index)}
                             //   onFocus={(e) => {
                             //     e.target.selectionStart =this.cursor;
                             // }}
@@ -190,9 +194,7 @@ export default function PatPopup() {
                             name="years"
                             placeholder="Issue last for"
                             value={field.years}
-                            onChange={(e) =>
-                              handleInputChange(e, index, "year")
-                            }
+                            onChange={(e) => handleInputChange(e, index)}
                           ></input>
                         </div>
                       );

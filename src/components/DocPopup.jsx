@@ -43,6 +43,16 @@ export default function DocPopup() {
       .catch((err) => {
         alert(err.message);
       });
+    //get data after added
+    axiosClient
+      .get(`doctor/${userInfo.docid}`)
+      .then((res) => {
+        let data = res?.data;
+        dispatch(setInfo(data));
+      })
+      .catch((err) => {
+        // alert(err.message);
+      });
   };
 
   return (
@@ -73,7 +83,7 @@ export default function DocPopup() {
               <div className="profile-div">
                 <div className="avatar-div">
                   <label htmlFor="img">
-                    <img src={image === "" ? "../avatar.png" : image} alt="" />
+                    <img src={image === "" ? "/avatar.png" : image} alt="" />
                   </label>
                   <input
                     type="file"

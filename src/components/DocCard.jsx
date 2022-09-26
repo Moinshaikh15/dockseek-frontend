@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function DocCard({ doc }) {
   let goto = useNavigate();
-  
+  let ratings = [];
+  for (let i = 0; i < doc.rating; i++) {
+    ratings.push("⭐");
+  }
+  useEffect(() => {}, []);
+ 
   return (
     <div
       className="doc-Card"
@@ -14,7 +19,7 @@ export default function DocCard({ doc }) {
     >
       <div className="img-div">
         <img
-          src={doc.img !== null ? doc.img : "../medical-team.png"}
+          src={doc.img !== "" ? doc.img : "../medical-team.png"}
           alt="img"
         />
       </div>
@@ -28,7 +33,11 @@ export default function DocCard({ doc }) {
           experience
         </p> */}
         <p>₹{doc.fees}</p>
-        <p>⭐⭐⭐⭐ </p>
+        <div style={{ display: "flex" }}>
+          {ratings.map((el) => (
+            <p>{el}</p>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,17 +1,45 @@
 import React, { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axiosClient from "../axiosConfig";
+import { addNoteLocally, markCancel } from "../slices/infoSlice";
 export default function AppoDetails() {
+  let dispatch = useDispatch();
   let { state } = useLocation();
   let { userInfo } = useSelector((state) => state.user);
   let el = state.el;
   let status = state.status;
   let noteRef = useRef();
   let [start, setStart] = useState();
+  let rating = ["⭐", "⭐", "⭐", "⭐", "⭐"];
+  let [selectedRate, setSelectedRate] = useState("");
   let markDone = () => {
     axiosClient
       .post(`appointment/${el.id}/update`, { flag: "done" })
+      .then((res) => {
+        return dispatch(markDone(el.id));
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+    //add  fees to earning
+    axiosClient
+      .post(`doctor/${el.docid}/addearnings`, { fees: el.fees })
+      .then((res) => {})
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+  let addRatings = () => {
+    axiosClient
+      .post(`doctor/${el.docid}/addratings`, { newRating: selectedRate + 1 })
+      .then((res) => {})
+      .catch((err) => {
+        alert(err.message);
+      });
+    axiosClient
+      .post(`appointment/${el.id}/addratings`, { ratings: selectedRate + 1 })
       .then((res) => {})
       .catch((err) => {
         alert(err.message);
@@ -20,19 +48,29 @@ export default function AppoDetails() {
   let addNote = () => {
     axiosClient
       .post(`appointment/${el.id}/addnote`, { note: noteRef.current.value })
-      .then((res) => {})
+      .then((res) => {
+         dispatch(
+          addNoteLocally({ id: el.id, note: noteRef.current.value })
+        );
+      })
       .catch((err) => {
         alert(err.message);
       });
   };
   let cancelAppointment = () => {
     axiosClient
-      .post(`appointment/${el.id}/update`, { flag: "cancel" })
-      .then((res) => {})
+      .post(`appointment/${el.id}/update`, { flag: "canceled" })
+      .then((res) => {
+        return dispatch(markCancel(el.id));
+      })
       .catch((err) => {
         alert(err.message);
       });
   };
+  useEffect(() => {
+    if (el.rating > 0) setSelectedRate(el.rating);
+  }, []);
+
   let showStart = () => {
     let d = new Date();
     let todaysFullDate = () => {
@@ -52,7 +90,7 @@ export default function AppoDetails() {
       }
     }
   };
-
+  console.log(el);
   return (
     <div className="appo-Details">
       <div style={{ width: "1000px" }}>
@@ -77,11 +115,54 @@ export default function AppoDetails() {
 
           <p>Fees: ₹{el.fees}</p>
           {userInfo.docid !== null ? (
-            !start ? (
+            start ? (
               <button className="start">Start Meeting</button>
             ) : (
               ""
             )
+          ) : status === "past" ? (
+            <>
+              <div style={{ display: "flex" }}>
+                {rating.map((elem, indx) => (
+                  <p
+                    style={{
+                      filter:
+                        indx <= selectedRate ? "invert(0)" : "invert(50%)",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (el.rating <= 0) setSelectedRate(indx);
+                    }}
+                  >
+                    {elem}
+                  </p>
+                ))}
+              </div>
+              {el.rating > 0 ? (
+                ""
+              ) : (
+                <button className="start" onClick={() => addRatings()}>
+                  Rate doctor
+                </button>
+              )}
+            </>
+          ) : (
+            ""
+          )}
+
+          {el.flag !== "pending" ? (
+            <p
+              style={{
+                color:
+                  el.flag === "done"
+                    ? "green"
+                    : el.flag === "canceled"
+                    ? "red"
+                    : "",
+              }}
+            >
+              APPOINTMENT {el.flag?.toUpperCase()}
+            </p>
           ) : (
             ""
           )}
@@ -107,18 +188,7 @@ export default function AppoDetails() {
                 Mark Done
               </button>
             ) : (
-              <p
-                style={{
-                  color:
-                    el.flag === "done"
-                      ? "green"
-                      : el.flag === "cancel"
-                      ? "red"
-                      : "",
-                }}
-              >
-                {el.flag?.toUpperCase()}
-              </p>
+              ""
             )}
           </div>
         ) : (

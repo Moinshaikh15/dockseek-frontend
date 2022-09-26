@@ -19,11 +19,11 @@ export default function Main() {
     axiosClient
       .get(`doctor/${docId}`)
       .then((res) => {
-        let data = res.data;
+        let data = res?.data;
         dispatch(setInfo(data));
       })
       .catch((err) => {
-        alert(err.message);
+        // alert(err.message);
       });
   };
 
@@ -34,11 +34,11 @@ export default function Main() {
     axiosClient
       .get(`patient/${patId}`)
       .then((res) => {
-        let data = res.data;
+        let data = res?.data;
         dispatch(setInfo(data));
       })
       .catch((err) => {
-        alert(err.message);
+        // alert(err.message);
       });
   };
 
@@ -47,16 +47,16 @@ export default function Main() {
     axiosClient
       .get(`doctor/`)
       .then((res) => {
-        let data = res.data;
+        let data = res?.data;
         dispatch(setDoctors(data));
       })
       .catch((err) => {
-        alert(err.message);
+        // alert(err.message);
       });
   };
   useEffect(() => {
     if (userInfo?.docid !== null) {
-      getDocInfo();
+     getDocInfo();
     } else {
       getPatient();
     }

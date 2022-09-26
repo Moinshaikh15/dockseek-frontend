@@ -8,6 +8,7 @@ export default function Home() {
   let { doctors, specialities, showDocs } = useSelector(
     (state) => state.otherInfo
   );
+  console.log(showDocs);
   // let [showDocs, setShowDocs] = useState([]);
   let ref = useRef();
   let dispatch = useDispatch();

@@ -10,8 +10,6 @@ export default function Appointments() {
   let { userInfo } = useSelector((state) => state.user);
   let { todaysAppointments, upcomingAppointments, pastAppointments } =
     useSelector((state) => state.otherInfo);
-  // let [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  // let [pastAppointments, setPastAppointments] = useState([]);
   const d = new Date();
 
   let getAllAppo = () => {
@@ -74,7 +72,7 @@ export default function Appointments() {
   //   // setPastAppointments(pastAppointments);
   // };
   // todaysFullDate();
-  console.log(upcomingAppointments, pastAppointments);
+
   useEffect(() => {
     getAllAppo();
     // getAppo();
@@ -84,90 +82,112 @@ export default function Appointments() {
       <div className="appo-container">
         <h4>Todays Appointments</h4>
         <div className="appoCard-container">
-          {todaysAppointments.map((el) => (
-            <div
-              className="appointment-Card"
-              onClick={() =>
-                goto("/main/appointments/details", {
-                  state: { el, status: "past" },
-                })
-              }
-              key={Date.now() + el.id}
-            >
-              <h4>
-                {el.day}, {el.date}
-              </h4>
-              <p> {el.starttime}</p>
-              <div className="doc-name">
-                {userInfo.docid === null ? (
-                  <h4>Dr.{el.docname}</h4>
-                ) : (
-                  <h4> Patient {el.patname}</h4>
-                )}
+          {todaysAppointments.length === 0 ? (
+            <p>No Appointments Today</p>
+          ) : (
+            todaysAppointments.map((el) => (
+              <div
+                className="appointment-Card"
+                onClick={() =>
+                  goto("/main/appointments/details", {
+                    state: { el, status: "today" },
+                  })
+                }
+                key={Date.now() + el.id}
+              >
+                <h4>
+                  {el.day}, {el.date}
+                </h4>
+                <p>Time: {el.starttime}</p>
+                <div className="doc-name">
+                  {userInfo.docid === null ? (
+                    <h4>Dr.{el.docname}</h4>
+                  ) : (
+                    <h4> Patient {el.patname}</h4>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
       <div className="appo-container">
         <h4>Upcoming Appointments</h4>
         <div className="appoCard-container">
-          {upcomingAppointments.map((el) => (
-            <div
-              className="appointment-Card"
-              onClick={() =>
-                goto("/main/appointments/details", {
-                  state: { el, status: "upcoming" },
-                })
-              }
-              key={Date.now() + el.id}
-            >
-              <h4>
-                {el.day}, {el.date}
-              </h4>
-              <p>Time: {el.starttime}</p>
-              <div className="doc-name">
-                {userInfo.docid === null ? (
-                  <h4>Dr.{el.docname}</h4>
-                ) : (
-                  <h4>
-                    {" "}
-                    <span style={{ fontWeight: "400" }}>Patient:</span>{" "}
-                    {el.patname}
-                  </h4>
-                )}
+          {upcomingAppointments.length === 0 ? (
+            <p>No Upcoming Appointments Yet</p>
+          ) : (
+            upcomingAppointments.map((el) => (
+              <div
+                className="appointment-Card"
+                onClick={() =>
+                  goto("/main/appointments/details", {
+                    state: { el, status: "upcoming" },
+                  })
+                }
+                key={Date.now() + el.id}
+              >
+                <h4>
+                  {el.day}, {el.date}
+                </h4>
+                <p>Time: {el.starttime}</p>
+                <div
+                  className="doc-name"
+                  style={{
+                    backgroundColor:
+                      el.flag === "done"
+                        ? "green"
+                        : el.flag === "canceled"
+                        ? "red"
+                        : "",
+                  }}
+                >
+                  {userInfo.docid === null ? (
+                    <h4>Dr.{el.docname}</h4>
+                  ) : (
+                    <h4>
+                      {" "}
+                      <span style={{ fontWeight: "400" }}>Patient:</span>{" "}
+                      {el.patname}
+                    </h4>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
       <div className="appo-container">
         <h4>Past Appointments</h4>
         <div className="appoCard-container">
-          {pastAppointments.map((el) => (
-            <div
-              className="appointment-Card"
-              onClick={() =>
-                goto("/main/appointments/details", {
-                  state: { el, status: "past" },
-                })
-              }
-              key={Date.now() + el.id}
-            >
-              <h4>
-                {el.day}, {el.date}
-              </h4>
-              <p> {el.starttime}</p>
-              <div className="doc-name">
-                {userInfo.docid === null ? (
-                  <h4>Dr.{el.docname}</h4>
-                ) : (
-                  <h4> Patient {el.patname}</h4>
-                )}
+          {pastAppointments.length === 0 ? (
+            <p>No Past Appointments</p>
+          ) : (
+            pastAppointments.map((el) => (
+              <div
+                className="appointment-Card"
+                onClick={() =>
+                  goto("/main/appointments/details", {
+                    state: { el, status: "past" },
+                  })
+                }
+                key={Date.now() + el.id}
+              >
+                <h4>
+                  {el.day}, {el.date}
+                </h4>
+                <p> {el.starttime}</p>
+                <div className="doc-name">
+                  {userInfo.docid === null ? (
+                    <h4>Dr.{el.docname}</h4>
+                  ) : (
+                    <h4> Patient {el.patname}</h4>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

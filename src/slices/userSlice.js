@@ -36,8 +36,11 @@ const userSlice = createSlice({
       copyInfo.gender = obj.gender;
       state.info = copyInfo;
     },
+    addInfo:(state,action)=>{
+
+    }
   },
 });
 
 export default userSlice.reducer;
-export const { setUser, setInfo, setDocInfo,setPatInfo } = userSlice.actions;
+export const { setUser, setInfo, setDocInfo,setPatInfo,addInfo } = userSlice.actions;

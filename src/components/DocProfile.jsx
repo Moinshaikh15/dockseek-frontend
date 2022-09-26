@@ -42,32 +42,25 @@ export default function DocProfile() {
   return (
     <>
       <div className="left">
-        <p>Total Earnings</p>
-        <div>
-          {info?.pastissues?.pastIssueFields.map((issue) =>
-            issue.issueName !== "" ? (
-              <div key={Date.now() + issue.issueName + issue.years}>
-                <p>{issue.issueName}</p>
-                <p>{issue.years} year</p>
-              </div>
-            ) : (
-              ""
-            )
-          )}
-        </div>
+        <h3>Total Earnings: ₹ {info?.earning}</h3>
       </div>
       <div className="right">
+        <div className="main-info">
+          <div className="img-div">
+            <img
+              src={info?.img !== "" ? info?.img : "../medical-team.png"}
+              alt="img"
+            />
+          </div>
+          <div>
+            <h2>Dr.{userInfo?.name}</h2>
+            <p style={{ color: "rgb(219, 232, 237)" }}>{info?.speciality}</p>
+            <p style={{ fontSize: "18px" }}>{info?.qualification}</p>
+          </div>
+        </div>
         <div>
-          <h2>Dr.{userInfo?.name}</h2>
-          <h4>Your Personal Information</h4>
-          <div>
-            <p>Qualification: {info?.qualification}</p>
-            <p>Specialities: {info?.speciality}</p>
-          </div>
-          <div>
-            <p>Experience: {info?.experience} years</p>
-            <p>Hospital: {info?.hospital}</p>
-          </div>
+          <p>Experience: {info?.experience} years</p>
+          <p>Hospital: {info?.hospital}</p>
         </div>
         <div className="edit-container-main">
           <button className="edit" onClick={() => setShowEdit(!showEdit)}>

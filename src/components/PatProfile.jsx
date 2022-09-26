@@ -66,17 +66,41 @@ export default function PatProfile() {
             )
           )}
         </div>
+        <img src="/bowl.png" alt="" />
       </div>
       <div className="right">
-        <div>
-          <h2>Hi {userInfo?.name}</h2>
-          <h4>Your Personal Information</h4>
+        <div className="info">
           <div>
-            <p>Age: {info?.age}</p>
-            <p>Weight: {info?.weight} kg</p>
+            <h2>Hello, {userInfo?.name}</h2>
+            <p style={{ fontSize: "18px" }}>How are you feeling today?</p>
           </div>
-          <div>
-            <p>Gender: {info?.gender}</p> <p>Blood Group: {info?.bloodgroup}</p>
+
+          {/* <h4>Your Personal Information</h4> */}
+          <div style={{ display: "flex", gap: "30px" }}>
+            <div>
+              <p>Age </p>
+              <p style={{ fontSize: "18px", fontWeight: "600" }}>{info?.age}</p>
+            </div>
+            <div>
+              <p>Weight </p>
+              <p style={{ fontSize: "18px", fontWeight: "600" }}>
+                {info?.weight} kg
+              </p>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: "30px" }}>
+            <div>
+              <p>Gender </p>
+              <p style={{ fontSize: "18px", fontWeight: "600" }}>
+                {info?.gender}
+              </p>
+            </div>
+            <div>
+              <p>Blood Group </p>
+              <p style={{ fontSize: "18px", fontWeight: "600" }}>
+                {info?.bloodgroup}
+              </p>
+            </div>
           </div>
         </div>
         <div className="edit-container-main">
