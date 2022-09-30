@@ -19,7 +19,7 @@ export default function DocCard({ doc }) {
     >
       <div className="img-div">
         <img
-          src={doc.img !== "" ? doc.img : "../medical-team.png"}
+          src={doc.img !== '' ? doc.img : "../medical-team.png"}
           alt="img"
         />
       </div>
