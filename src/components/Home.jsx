@@ -33,21 +33,6 @@ export default function Home() {
   };
   let filterDocs = (filterEl, filterType) => {
     dispatch(setShowDoc({ filterEl, filterType }));
-    // if (filterType === "speciality") {
-    //   let resultArr = doctors.filter((el) => {
-    //     el = { ...el };
-    //     el.speciality = el.speciality.toLowerCase();
-    //     if (el.speciality === filterEl || el.speciality.includes(filterEl)) {
-    //       return el;
-    //     }
-    //   });
-    //   setShowDocs(resultArr);
-    // } else if (filterType === "price") {
-    //   let resultArr = doctors.filter(
-    //     (el) => Number(el.fees) <= Number(filterEl)
-    //   );
-    //   setShowDocs(resultArr);
-    // }
   };
 
   useEffect(() => {
